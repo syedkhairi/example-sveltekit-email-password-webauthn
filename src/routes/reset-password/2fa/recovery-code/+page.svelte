@@ -3,7 +3,11 @@
 
 	import type { ActionData } from "./$types";
 
-	export let form: ActionData;
+	interface Props {
+		form: ActionData;
+	}
+
+	let { form }: Props = $props();
 </script>
 
 <h1>Use your recovery code</h1>

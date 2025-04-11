@@ -4,8 +4,12 @@
 
 	import type { PageData, ActionData } from "./$types";
 
-	export let data: PageData;
-	export let form: ActionData;
+	interface Props {
+		data: PageData;
+		form: ActionData;
+	}
+
+	let { data, form }: Props = $props();
 </script>
 
 <header>

@@ -6,9 +6,13 @@
 
 	import type { ActionData } from "./$types";
 
-	export let form: ActionData;
+	interface Props {
+		form: ActionData;
+	}
 
-	let passkeyErrorMessage = "";
+	let { form }: Props = $props();
+
+	let passkeyErrorMessage = $state("");
 </script>
 
 <h1>Sign in</h1>
@@ -29,7 +33,7 @@
 </form>
 <div>
 	<button
-		on:click={async () => {
+		onclick={async () => {
 			const challenge = await createChallenge();
 
 			const credential = await navigator.credentials.get({

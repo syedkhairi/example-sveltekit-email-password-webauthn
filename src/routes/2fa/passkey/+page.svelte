@@ -5,15 +5,19 @@
 
 	import type { PageData } from "./$types";
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	let message = "";
+	let { data }: Props = $props();
+
+	let message = $state("");
 </script>
 
 <h1>Authenticate with passkeys</h1>
 <div>
 	<button
-		on:click={async () => {
+		onclick={async () => {
 			const challenge = await createChallenge();
 
 			const credential = await navigator.credentials.get({
