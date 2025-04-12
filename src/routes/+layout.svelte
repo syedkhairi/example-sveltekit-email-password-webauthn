@@ -2,6 +2,7 @@
 	import "../app.css";
 	import type { Snippet } from "svelte";
 	import { ModeWatcher } from "mode-watcher";
+	import { Toaster } from "$lib/components/ui/sonner/index.js";
 
 	interface Props {
 		children?: Snippet;
@@ -11,6 +12,7 @@
 </script>
 
 <ModeWatcher />
+<Toaster />
 
 <svelte:head>
 	<title>Email and password example with 2FA and WebAuthn in SvelteKit</title>

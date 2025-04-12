@@ -13,6 +13,7 @@
     let urlParts = $derived.by(() => {
         return page.url.pathname.split('/')
             .filter((part) => part !== '')
+            .map((part) => part.replace(/-/g, ' '));
     })
 
 </script>
@@ -31,7 +32,7 @@
                                 {#if index === urlParts.length - 1}
                                     <Breadcrumb.Page class="first-letter:uppercase">{part}</Breadcrumb.Page>
                                 {:else}
-                                    <Breadcrumb.Link class="first-letter:uppercase" href={`/${urlParts.slice(0, index + 1).join('/')}`}>
+                                    <Breadcrumb.Link class="first-letter:uppercase" href={`/${page.url.pathname.split('/').filter(p => p).slice(0, index + 1).join('/')}`}>
                                         {part}
                                     </Breadcrumb.Link>
                                 {/if}
@@ -45,7 +46,7 @@
 			</div>
 		</header>
 		<div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-			<div class="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min">
+			<div class="min-h-[100vh] flex-1 rounded-xl md:min-h-min">
                 {@render children()}
             </div>
 		</div>

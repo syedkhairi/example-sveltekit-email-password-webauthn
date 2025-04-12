@@ -31,24 +31,24 @@ import type { SessionFlags } from "$lib/server/session";
 const passwordUpdateBucket = new ExpiringTokenBucket<string>(5, 60 * 30);
 
 export async function load(event: RequestEvent) {
-	if (event.locals.session === null || event.locals.user === null) {
-		return redirect(302, "/login");
-	}
-	if (event.locals.user.registered2FA && !event.locals.session.twoFactorVerified) {
-		return redirect(302, get2FARedirect(event.locals.user));
-	}
-	let recoveryCode: string | null = null;
-	if (event.locals.user.registered2FA) {
-		recoveryCode = getUserRecoverCode(event.locals.user.id);
-	}
-	const passkeyCredentials = getUserPasskeyCredentials(event.locals.user.id);
-	const securityKeyCredentials = getUserSecurityKeyCredentials(event.locals.user.id);
-	return {
-		recoveryCode,
-		user: event.locals.user,
-		passkeyCredentials,
-		securityKeyCredentials
-	};
+	// if (event.locals.session === null || event.locals.user === null) {
+	// 	return redirect(302, "/login");
+	// }
+	// if (event.locals.user.registered2FA && !event.locals.session.twoFactorVerified) {
+	// 	return redirect(302, get2FARedirect(event.locals.user));
+	// }
+	// let recoveryCode: string | null = null;
+	// if (event.locals.user.registered2FA) {
+	// 	recoveryCode = getUserRecoverCode(event.locals.user.id);
+	// }
+	// const passkeyCredentials = getUserPasskeyCredentials(event.locals.user.id);
+	// const securityKeyCredentials = getUserSecurityKeyCredentials(event.locals.user.id);
+	// return {
+	// 	recoveryCode,
+	// 	user: event.locals.user,
+	// 	passkeyCredentials,
+	// 	securityKeyCredentials
+	// };
 }
 
 export const actions: Actions = {

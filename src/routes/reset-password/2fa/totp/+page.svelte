@@ -19,10 +19,10 @@
 	<button>Verify</button>
 	<p>{form?.message ?? ""}</p>
 </form>
-<a href="/reset-password/2fa/recovery-code">Use recovery code</a>
+<a href="/reset-password/settings/authentication/recovery-code">Use recovery code</a>
 {#if data.user.registeredSecurityKey}
-	<a href="/reset-password/2fa/security-key">Use security keys</a>
+	<a href="/reset-password/settings/authentication/security-key">Use security keys</a>
 {/if}
 {#if data.user.registeredPasskey}
-	<a href="/reset-password/2fa/passkey">Use passkeys</a>
+	<a href="/reset-password/settings/authentication/passkey">Use passkeys</a>
 {/if}

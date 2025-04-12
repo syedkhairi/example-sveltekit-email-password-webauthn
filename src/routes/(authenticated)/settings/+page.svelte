@@ -48,12 +48,12 @@
 	<section>
 		<h2>Authenticator app</h2>
 		{#if data.user.registeredTOTP}
-			<a href="/2fa/totp/setup">Update TOTP</a>
+			<a href="/settings/authentication/totp/setup">Update TOTP</a>
 			<form method="post" use:enhance action="?/disconnect_totp">
 				<button>Disconnect</button>
 			</form>
 		{:else}
-			<a href="/2fa/totp/setup">Set up TOTP</a>
+			<a href="/settings/authentication/totp/setup">Set up TOTP</a>
 		{/if}
 	</section>
 	<section>
@@ -70,7 +70,7 @@
 				</li>
 			{/each}
 		</ul>
-		<a href="/2fa/passkey/register">Add</a>
+		<a href="/settings/authentication/passkey/register">Add</a>
 	</section>
 	<section>
 		<h2>Security keys</h2>
@@ -86,7 +86,7 @@
 				</li>
 			{/each}
 		</ul>
-		<a href="/2fa/security-key/register">Add</a>
+		<a href="/settings/authentication/security-key/register">Add</a>
 	</section>
 	{#if data.recoveryCode !== null}
 		<section>

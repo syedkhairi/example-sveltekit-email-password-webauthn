@@ -40,7 +40,7 @@
 				throw new Error("Unexpected error");
 			}
 
-			const response = await fetch("/reset-password/2fa/passkey", {
+			const response = await fetch("/reset-password/settings/authentication/passkey", {
 				method: "POST",
 				body: JSON.stringify({
 					credential_id: encodeBase64(new Uint8Array(credential.rawId)),
@@ -59,10 +59,10 @@
 	>
 	<p>{message}</p>
 </div>
-<a href="/reset-password/2fa/recovery-code">Use recovery code</a>
+<a href="/reset-password/settings/authentication/recovery-code">Use recovery code</a>
 {#if data.user.registeredSecurityKey}
-	<a href="/reset-password/2fa/security-key">Use security keys</a>
+	<a href="/reset-password/settings/authentication/security-key">Use security keys</a>
 {/if}
 {#if data.user.registeredTOTP}
-	<a href="/reset-password/2fa/totp">Use authenticator apps</a>
+	<a href="/reset-password/settings/authentication/totp">Use authenticator apps</a>
 {/if}

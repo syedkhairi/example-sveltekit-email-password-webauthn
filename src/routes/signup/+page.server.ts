@@ -22,7 +22,7 @@ export function load(event: PageServerLoadEvent) {
 			return redirect(302, "/verify-email");
 		}
 		if (!event.locals.user.registered2FA) {
-			return redirect(302, "/2fa/setup");
+			return redirect(302, "/settings/authentication/setup");
 		}
 		if (!event.locals.session.twoFactorVerified) {
 			return redirect(302, get2FARedirect(event.locals.user));
@@ -113,5 +113,5 @@ async function action(event: RequestEvent) {
 	const sessionToken = generateSessionToken();
 	const session = createSession(sessionToken, user.id, sessionFlags);
 	setSessionTokenCookie(event, sessionToken, session.expiresAt);
-	throw redirect(302, "/2fa/setup");
+	throw redirect(302, "/settings/authentication/setup");
 }

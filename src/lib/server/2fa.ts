@@ -50,26 +50,26 @@ export function resetUser2FAWithRecoveryCode(userId: number, recoveryCode: strin
 
 export function get2FARedirect(user: User): string {
 	if (user.registeredPasskey) {
-		return "/2fa/passkey";
+		return "/settings/authentication/passkey";
 	}
 	if (user.registeredSecurityKey) {
-		return "/2fa/security-key";
+		return "/settings/authentication/security-key";
 	}
 	if (user.registeredTOTP) {
-		return "/2fa/totp";
+		return "/settings/authentication/totp";
 	}
-	return "/2fa/setup";
+	return "/settings/authentication/setup";
 }
 
 export function getPasswordReset2FARedirect(user: User): string {
 	if (user.registeredPasskey) {
-		return "/reset-password/2fa/passkey";
+		return "/reset-password/settings/authentication/passkey";
 	}
 	if (user.registeredSecurityKey) {
-		return "/reset-password/2fa/security-key";
+		return "/reset-password/settings/authentication/security-key";
 	}
 	if (user.registeredTOTP) {
-		return "/reset-password/2fa/totp";
+		return "/reset-password/settings/authentication/totp";
 	}
-	return "/2fa/setup";
+	return "/settings/authentication/setup";
 }

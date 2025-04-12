@@ -1,13 +1,8 @@
 <script lang="ts" module>
-	import BookOpen from "@lucide/svelte/icons/book-open";
-	import Bot from "@lucide/svelte/icons/bot";
-	import ChartPie from "@lucide/svelte/icons/chart-pie";
 	import ListCheck from "@lucide/svelte/icons/list-check";
 	import Layers from "@lucide/svelte/icons/layers";
 	import Square from "@lucide/svelte/icons/square";
-	import Frame from "@lucide/svelte/icons/frame";
 	import LifeBuoy from "@lucide/svelte/icons/life-buoy";
-	import Map from "@lucide/svelte/icons/map";
 	import Send from "@lucide/svelte/icons/send";
 	import Settings2 from "@lucide/svelte/icons/settings-2";
 	import SquareTerminal from "@lucide/svelte/icons/square-terminal";
