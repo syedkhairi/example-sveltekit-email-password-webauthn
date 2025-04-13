@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { enhance } from "$app/forms";
+	import type { ActionData, PageData } from "./$types";
+	import ForgotPassword from "./forgot-password.svelte";
 
-	import type { ActionData } from "./$types";
-
-	interface Props {
-		form: ActionData;
-	}
-
-	let { form }: Props = $props();
+	let { data }: { data: PageData } = $props();
 </script>
 
-<h1>Forgot your password?</h1>
+<div class="flex h-screen w-full items-center justify-center px-4">
+	<ForgotPassword data={data.form} />
+</div>
+
+<!-- <h1>Forgot your password?</h1>
 <form method="post" use:enhance>
 	<label for="form-forgot.email">Email</label>
 	<input type="email" id="form-forgot.email" name="email" required value={form?.email ?? ""} /><br />
 	<button>Send</button>
 	<p>{form?.message ?? ""}</p>
 </form>
-<a href="/login">Sign in</a>
+<a href="/login">Sign in</a> -->

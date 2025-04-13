@@ -63,13 +63,13 @@ export function get2FARedirect(user: User): string {
 
 export function getPasswordReset2FARedirect(user: User): string {
 	if (user.registeredPasskey) {
-		return "/reset-password/settings/authentication/passkey";
+		return "/reset-password/2fa/passkey";
 	}
 	if (user.registeredSecurityKey) {
-		return "/reset-password/settings/authentication/security-key";
+		return "/reset-password/2fa/security-key";
 	}
 	if (user.registeredTOTP) {
-		return "/reset-password/settings/authentication/totp";
+		return "/reset-password/2fa/totp";
 	}
 	return "/settings/authentication/setup";
 }

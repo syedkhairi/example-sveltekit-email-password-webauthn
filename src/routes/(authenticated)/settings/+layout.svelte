@@ -9,7 +9,7 @@
 	const sidebarNavItems = [
 		{
 			title: "Profile",
-			href: "/settings",
+			href: "/settings/profile",
 		},
 		{
 			title: "Security",

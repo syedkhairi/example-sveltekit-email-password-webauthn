@@ -9,8 +9,8 @@
 
 	const data = {
 		user: {
-			name: "shadcn",
-			email: "m@example.com",
+			name: "Syed",
+			email: "me@syedkhairi.com",
 			avatar: "/avatars/shadcn.jpg",
 		},
 		navMain: [
@@ -103,7 +103,7 @@
 								<Command class="size-4" />
 							</div>
 							<div class="grid flex-1 text-left text-sm leading-tight">
-								<span class="truncate font-semibold">Acme Inc</span>
+								<span class="truncate font-semibold">Monsters Inc</span>
 								<span class="truncate text-xs">Enterprise</span>
 							</div>
 						</a>

@@ -8,6 +8,9 @@ import { fail, redirect } from "@sveltejs/kit";
 
 import type { Actions, RequestEvent } from "./$types";
 import { getPasswordReset2FARedirect } from "$lib/server/2fa";
+import { superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
+import { formSchema } from "./verify-email-form.svelte";
 
 const bucket = new ExpiringTokenBucket<number>(5, 60 * 30);
 
@@ -23,6 +26,7 @@ export async function load(event: RequestEvent) {
 		return redirect(302, "/reset-password");
 	}
 	return {
+		form: await superValidate(zod(formSchema)),
 		email: session.email
 	};
 }

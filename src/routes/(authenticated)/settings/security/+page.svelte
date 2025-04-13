@@ -28,7 +28,7 @@
 	<TotpForm data={data.totpForm} />
 	<PasskeyForm data={data.passkeyForm} />
 	<SecurityKeyForm data={data.securityKeyForm} />
-	<RecoveryCode />
+	<RecoveryCode recoveryCode={data.recoveryCode} />
 </div>
 
 <!-- {#if browser}

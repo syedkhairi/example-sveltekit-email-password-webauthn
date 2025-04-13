@@ -10,13 +10,16 @@ import {
 	setEmailVerificationRequestCookie
 } from "$lib/server/email-verification";
 import { get2FARedirect } from "$lib/server/2fa";
+import { registerFormSchema } from "./signup-form.svelte";
+import { zod } from "sveltekit-superforms/adapters";
+import { superValidate } from "sveltekit-superforms";
 
 import type { SessionFlags } from "$lib/server/session";
 import type { Actions, PageServerLoadEvent, RequestEvent } from "./$types";
 
 const ipBucket = new RefillingTokenBucket<string>(3, 10);
 
-export function load(event: PageServerLoadEvent) {
+export const load = (async (event: PageServerLoadEvent) => {
 	if (event.locals.session !== null && event.locals.user !== null) {
 		if (!event.locals.user.emailVerified) {
 			return redirect(302, "/verify-email");
@@ -29,8 +32,10 @@ export function load(event: PageServerLoadEvent) {
 		}
 		return redirect(302, "/");
 	}
-	return {};
-}
+	return {
+		form: await superValidate(zod(registerFormSchema))
+	};
+});
 
 export const actions: Actions = {
 	default: action

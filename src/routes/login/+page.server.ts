@@ -8,8 +8,11 @@ import { get2FARedirect } from "$lib/server/2fa";
 
 import type { SessionFlags } from "$lib/server/session";
 import type { Actions, PageServerLoadEvent, RequestEvent } from "./$types";
+import { superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
+import { loginFormSchema } from "./login-form.svelte";
 
-export function load(event: PageServerLoadEvent) {
+export const load = (async (event: PageServerLoadEvent) => {
 	if (event.locals.session !== null && event.locals.user !== null) {
 		if (!event.locals.user.emailVerified) {
 			return redirect(302, "/verify-email");
@@ -22,8 +25,10 @@ export function load(event: PageServerLoadEvent) {
 		}
 		return redirect(302, "/");
 	}
-	return {};
-}
+	return {
+		form: await superValidate(zod(loginFormSchema))
+	};
+});
 
 const throttler = new Throttler<number>([0, 1, 2, 4, 8, 16, 30, 60, 180, 300]);
 const ipBucket = new RefillingTokenBucket<string>(20, 1);

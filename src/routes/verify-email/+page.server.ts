@@ -13,6 +13,9 @@ import { updateUserEmailAndSetEmailAsVerified } from "$lib/server/user";
 import { ExpiringTokenBucket } from "$lib/server/rate-limit";
 
 import type { Actions, RequestEvent } from "./$types";
+import { superValidate } from "sveltekit-superforms";
+import { formSchema } from "./verify-email-form.svelte";
+import { zod } from "sveltekit-superforms/adapters";
 
 export async function load(event: RequestEvent) {
 	if (event.locals.user === null) {
@@ -29,7 +32,8 @@ export async function load(event: RequestEvent) {
 		setEmailVerificationRequestCookie(event, verificationRequest);
 	}
 	return {
-		email: verificationRequest.email
+		email: verificationRequest.email,
+		form: await superValidate(zod(formSchema)),
 	};
 }
 
