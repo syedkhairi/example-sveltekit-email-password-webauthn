@@ -24,6 +24,7 @@
 	let { data }: { data: SuperValidated<Infer<PasswordFormSchema>> } = $props();
 
 	const form = superForm(data, {
+		resetForm: false,
 		validators: zodClient(passwordFormSchema),
 	});
 	const { form: formData, enhance, validate } = form;

@@ -19,6 +19,7 @@
 	let { data }: { data: SuperValidated<Infer<SecurityKeySchema>> } = $props();
 
 	const form = superForm(data, {
+		resetForm: false,
 		validators: zodClient(securityKeySchema),
 		onResult: ({ result }) => {
 			if (result.type === "failure") {

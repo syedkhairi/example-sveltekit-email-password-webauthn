@@ -21,8 +21,7 @@
 
 	const form = superForm(data, {
 		dataType: 'json',
-		applyAction: true,
-		invalidateAll: true,
+		resetForm: false,
 		validators: zodClient(passkeyFormSchema),
 		onResult: ({ result }) => {
 			if (result.type === "failure") {
@@ -64,5 +63,5 @@
 </form>
 <!-- 
 {#if browser}
-	<SuperDebug data={$formData} />
+	<SuperDebug data={$formData} display={dev} />
 {/if} -->

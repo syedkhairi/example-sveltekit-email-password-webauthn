@@ -31,6 +31,7 @@
 	let { data }: { data: SuperValidated<Infer<EmailFormSchema>> } = $props();
 
 	const form = superForm(data, {
+		resetForm: false,
 		validators: zodClient(emailFormSchema),
 	});
 	const { form: formData, enhance, validate } = form;

@@ -54,7 +54,7 @@
         </form>
 
         <!-- {#if browser}
-            <SuperDebug data={$formData} />
+            <SuperDebug data={$formData} display={dev} />
         {/if} -->
 	</Card.Content>
 </Card.Root>

@@ -17,17 +17,24 @@
 	} from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import { toast } from "svelte-sonner";
-	import { browser } from "$app/environment";
+	import { browser, dev } from "$app/environment";
 	import * as InputOTP from "$lib/components/ui/input-otp/index.js";
 	import * as Form from "$lib/components/ui/form/index.js";
 
 	let { data }: { data: { form: SuperValidated<Infer<FormSchema>>, qrcode: string } } = $props(); 
 	
 	const form = superForm(data.form, {
+		resetForm: false,
 		validators: zodClient(formSchema),
-		onUpdated: (event) => {
-			console.log(event.form.message)
-		}
+		onResult: ({ result }) => {
+			if (result.type === "failure") {
+				toast.error(result.data?.message ?? "An error occurred");
+			}
+
+			if (result.type === "success") {
+				toast.success(result.data?.message ?? "Success");
+			}
+		},
 	});
 
 	const { form: formData, enhance } = form;
@@ -70,6 +77,6 @@
 	</form>
 
 	{#if browser}
-		<SuperDebug data={$formData} />
+		<SuperDebug data={$formData} display={dev} />
 	{/if}
 </div>

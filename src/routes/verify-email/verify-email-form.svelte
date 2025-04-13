@@ -17,7 +17,7 @@
 	} from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import { toast } from "svelte-sonner";
-	import { browser } from "$app/environment";
+	import { browser, dev } from "$app/environment";
 	import * as Form from "$lib/components/ui/form/index.js";
 
     let { data }: { data: SuperValidated<Infer<FormSchema>> } = $props();
@@ -62,5 +62,6 @@
 {#if browser}
     <SuperDebug
         data={$formData}
+		display={dev}
     />
 {/if}

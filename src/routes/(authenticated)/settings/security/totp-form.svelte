@@ -19,6 +19,7 @@
 	let { data }: { data: SuperValidated<Infer<TotpFormSchema>> } = $props();
 
 	const form = superForm(data, {
+		resetForm: false,
 		validators: zodClient(totpFormSchema),
 		onResult: ({ result }) => {
 			if (result.type === "failure") {
@@ -59,5 +60,5 @@
 </form>
 
 <!-- {#if browser}
-	<SuperDebug data={$formData} />
+	<SuperDebug data={$formData} display={dev} />
 {/if} -->

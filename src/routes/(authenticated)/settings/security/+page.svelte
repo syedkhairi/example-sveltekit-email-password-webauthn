@@ -32,5 +32,5 @@
 </div>
 
 <!-- {#if browser}
-	<SuperDebug data={data.form} />
+	<SuperDebug data={data.form} display={dev} />
 {/if} -->

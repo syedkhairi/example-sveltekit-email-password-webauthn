@@ -38,6 +38,7 @@ import type { SessionFlags } from "$lib/server/session";
 const passwordUpdateBucket = new ExpiringTokenBucket<string>(5, 60 * 30);
 
 export const load = (async ({ parent }) => {
+    console.log("load");
     const parentDataFromLayout = await parent();
 
     if (parentDataFromLayout) {

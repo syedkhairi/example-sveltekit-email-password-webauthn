@@ -16,7 +16,7 @@
 	} from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import { toast } from "svelte-sonner";
-	import { browser } from "$app/environment";
+	import { browser, dev } from "$app/environment";
 	import * as InputOTP from "$lib/components/ui/input-otp/index.js";
 	import * as Form from "$lib/components/ui/form/index.js";
     import * as Card from "$lib/components/ui/card/index.js";
@@ -63,7 +63,7 @@
         </form>
 
         {#if browser}
-            <SuperDebug data={$formData} />
+            <SuperDebug data={$formData} display={dev} />
         {/if}
     </Card.Content>
 </Card.Root>

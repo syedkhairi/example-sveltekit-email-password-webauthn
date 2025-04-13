@@ -1,6 +1,7 @@
 <script lang="ts">
 	import SuperDebug from "sveltekit-superforms";
 	import type { PageData } from "./$types";
+	import { dev } from "$app/environment";
 
 	interface Props {
 		data: PageData;
