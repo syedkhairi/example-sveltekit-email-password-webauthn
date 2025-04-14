@@ -52,7 +52,7 @@
 		{@html data.qrcode}
 	</div>
 
-	<form method="POST" class="w-2/3 space-y-6" use:enhance>
+	<form method="POST" class="space-y-3" use:enhance>
 		<input name="encodedTOTPKey" value={$formData.encodedTOTPKey} hidden required />
 		<Form.Field {form} name="pin">
 			<Form.Control>

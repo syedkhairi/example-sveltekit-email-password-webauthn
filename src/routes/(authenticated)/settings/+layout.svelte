@@ -23,10 +23,6 @@
 			title: "Billing",
 			href: "/settings/billing",
 		},
-		{
-			title: "Monetisation",
-			href: "/settings/monetisation",
-		},
 	];
 </script>
 

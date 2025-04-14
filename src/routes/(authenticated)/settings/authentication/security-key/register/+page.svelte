@@ -54,7 +54,6 @@
 	</div>
 
 	<Button
-		variant="outline"
 		class="w-full"
 		onclick={async () => {
 			const challenge = await createChallenge();

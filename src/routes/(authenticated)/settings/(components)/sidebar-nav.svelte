@@ -30,7 +30,7 @@
 		>
 			{#if isActive}
 				<div
-					class="bg-muted absolute inset-0 rounded-md"
+					class="bg-secondary absolute inset-0 rounded-md"
 					in:send={{ key: "active-sidebar-tab" }}
 					out:receive={{ key: "active-sidebar-tab" }}
 				></div>

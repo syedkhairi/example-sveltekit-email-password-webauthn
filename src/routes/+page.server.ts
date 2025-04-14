@@ -17,9 +17,7 @@ export function load(event: PageServerLoadEvent) {
 	if (!event.locals.session.twoFactorVerified) {
 		return redirect(302, get2FARedirect(event.locals.user));
 	}
-	return {
-		user: event.locals.user
-	};
+	return redirect(302, "/feeds");
 }
 
 export const actions: Actions = {

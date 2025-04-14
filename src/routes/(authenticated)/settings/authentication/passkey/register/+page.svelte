@@ -54,7 +54,6 @@
 	</div>
 
 	<Button
-		variant="outline"
 		class="w-full"
 		disabled={$formData.encodedAttestationObject !== null && $formData.encodedClientDataJSON !== null}
 		onclick={async () => {

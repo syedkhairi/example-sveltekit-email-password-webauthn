@@ -21,17 +21,7 @@
 				title: "Feeds",
 				url: "/feeds",
 				icon: Newspaper,
-				isActive: true,
-				items: [
-					{
-						title: "All feeds",
-						url: "#",
-					},
-					{
-						title: "Premium",
-						url: "#",
-					},
-				]
+				isActive: true
 			},
 			{
 				title: "Posts",
@@ -92,13 +82,6 @@
 				url: "#",
 				icon: Square,
 			},
-		],
-		premium_feeds: [
-			{
-				name: "London Cycling",
-				url: "#",
-				icon: BadgeCheck,
-			},
 		]
 	};
 </script>
@@ -141,7 +124,6 @@
 	<Sidebar.Content>
 		<NavMain items={data.navMain} />
 		<NavFeeds feeds={data.feeds} />
-		<NavPremiumFeeds feeds={data.premium_feeds} />
 		<NavSecondary items={data.navSecondary} class="mt-auto" />
 	</Sidebar.Content>
 	<Sidebar.Footer>
