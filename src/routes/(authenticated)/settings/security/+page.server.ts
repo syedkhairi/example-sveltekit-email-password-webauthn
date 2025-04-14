@@ -13,7 +13,8 @@ import {
     sendVerificationEmailBucket,
     setEmailVerificationRequestCookie
 } from "$lib/server/email-verification";
-import { checkEmailAvailability, verifyEmailInput } from "$lib/server/email";
+// import { checkEmailAvailability, verifyEmailInput } from "$lib/server/email";
+import { checkEmailAvailability } from "$lib/server/auth/email";
 import { verifyPasswordHash, verifyPasswordStrength } from "$lib/server/password";
 import { getUserPasswordHash, getUserRecoverCode, resetUserRecoveryCode, updateUserPassword } from "$lib/server/user";
 import {
