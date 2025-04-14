@@ -18,7 +18,7 @@
 
     <Separator />
 
-    <Alert.Root>
+    <!-- <Alert.Root>
         <Info class="size-4 mt-0.5" />
         <Alert.Description>
             At the moment, we only support connections to 
@@ -29,7 +29,7 @@
             </code>
             domain or server.
         </Alert.Description>
-    </Alert.Root>
+    </Alert.Root> -->
 
     <ConnectionsForm data={data.connectionsForm} />
 </div>

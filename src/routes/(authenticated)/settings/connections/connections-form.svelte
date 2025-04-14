@@ -4,6 +4,7 @@
 	export const connectionsFormSchema = z.object({
         accounts: z.array(
             z.object({
+                serverUrl: z.string().url().min(1, "Server URL must not be empty.").default("https://bsky.social"),
                 handle: z.string().min(2, "Handle must be at least 2 characters."),
                 did: z.string().min(2, "DID must be at least 2 characters."),
                 app_password: z.string().min(1, "App password must not be empty."),
@@ -48,6 +49,7 @@
                         },
                         body: JSON.stringify({
                             handle: account.handle,
+                            serverUrl: account.serverUrl,
                         }),
                     });
 
@@ -78,9 +80,10 @@
  
 	function addAccount() {
 		$formData.accounts = [...$formData.accounts, {
+            serverUrl: "https://bsky.social",
             handle: "",
             did: "",
-            app_password: "",
+            app_password: "flzn-bdfl-xl4f-xfhm",
         }];
 	}
 
@@ -104,6 +107,24 @@
 
                 <div class="grid grid-cols-2 gap-3">
                     <input type="hidden" name="accounts[{i}].did" bind:value={$formData.accounts[i].did} />
+
+                    <Form.ElementField {form} name="accounts[{i}].serverUrl" class="col-span-full">
+                        <Form.Control>
+                            {#snippet children({ props })}
+                                <Form.Label>Server URL {i + 1}</Form.Label>
+                                <Input type="text" disabled={$submitting} {...props} bind:value={$formData.accounts[i].serverUrl} placeholder="bsky.social" />
+                            {/snippet}
+                        </Form.Control>
+                        <Form.Description>
+                            Default is 
+                            <code
+                                class="bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
+                            >
+                                bsky.social
+                            </code>. If you are using a custom server, please enter the server URL here.
+                        </Form.Description>
+                        <Form.FieldErrors />
+                    </Form.ElementField>
 
                     <Form.ElementField {form} name="accounts[{i}].handle">
                         <Form.Control>

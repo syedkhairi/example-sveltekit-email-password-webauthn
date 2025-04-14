@@ -25,27 +25,27 @@
 			},
 			{
 				title: "Posts",
-				url: "#",
+				url: "/posts",
 				icon: MessageSquareText,
 				items: [
 					{
 						title: "Published",
-						url: "#",
+						url: "/posts/published",
 					},
 					{
 						title: "Scheduled",
-						url: "#",
+						url: "/posts/scheduled",
 					},
 				]
 			},
 			{
 				title: "Playground",
-				url: "#",
+				url: "/playground",
 				icon: SquareTerminal,
 			},
 			{
 				title: "Examples",
-				url: "#",
+				url: "/library",
 				icon: Layers,
 			},
 			{

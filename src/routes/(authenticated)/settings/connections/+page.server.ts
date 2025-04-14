@@ -20,8 +20,8 @@ export const actions: Actions = {
         const accounts = data.accounts;
 
         for (const account of accounts) {
-            const { handle, app_password } = account;
-            const validationResult = await validateBlueskyAccount(handle, app_password);
+            const { handle, app_password, serverUrl } = account;
+            const validationResult = await validateBlueskyAccount(serverUrl, handle, app_password);
             if (!validationResult.valid) {
                 return fail(400, {
                     form,
@@ -49,9 +49,11 @@ interface BlueskyErrorResponse {
     [key: string]: any;
 }
 
-async function validateBlueskyAccount(handle: string, appPassword: string): Promise<BlueskyValidationResult> {
+async function validateBlueskyAccount(serverUrl: string, handle: string, appPassword: string): Promise<BlueskyValidationResult> {
     try {
-        const response = await fetch('https://bsky.social/xrpc/com.atproto.server.createSession', {
+        const url = new URL(serverUrl);
+        
+        const response = await fetch(`${url.href}xrpc/com.atproto.server.createSession`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -7,7 +7,7 @@ export const GET: RequestHandler = async () => {
 export const POST: RequestHandler = async (event) => {
     // Add a long delay
     // await new Promise(resolve => setTimeout(resolve, 100000));
-    const { handle } = await event.request.json();
+    const { handle, serverUrl } = await event.request.json();
 
     if (!handle) {
         return new Response(JSON.stringify({
@@ -20,7 +20,21 @@ export const POST: RequestHandler = async (event) => {
         });
     }
 
-    const url = `https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=${handle}`;
+    if (!serverUrl) {
+        return new Response(JSON.stringify({
+            message: "No server URL provided"
+        }), {
+            status: 400,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+
+    // Parse server URL to check if it has forward slash at the end
+    const parsedUrl = new URL(serverUrl);
+
+    const url = `${parsedUrl.href}xrpc/com.atproto.identity.resolveHandle?handle=${handle}`;
     const response = await fetch(url, {
         method: 'GET',
         headers: {
