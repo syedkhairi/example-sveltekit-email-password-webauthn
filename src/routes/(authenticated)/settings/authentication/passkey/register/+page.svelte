@@ -119,7 +119,7 @@
 						<Form.Description>
 							This is usually the name of the device you are using to register the passkey. This is used to identify the passkey in the list of registered passkeys.
 						</Form.Description>
-						<Input {...props} bind:value={$formData.credentialName} placeholder="Macbook Air" />
+						<Input {...props} bind:value={$formData.credentialName} placeholder="Macbook Air" required />
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />

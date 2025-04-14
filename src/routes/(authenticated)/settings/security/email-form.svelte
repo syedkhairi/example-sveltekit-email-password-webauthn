@@ -42,7 +42,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Current email address</Form.Label>
-				<Input readonly {...props} bind:value={$formData.currentEmailAddress} />
+				<Input readonly {...props} bind:value={$formData.currentEmailAddress} type="email" />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
@@ -51,7 +51,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>New email address</Form.Label>
-				<Input {...props} bind:value={$formData.newEmailAddress} />
+				<Input {...props} bind:value={$formData.newEmailAddress} placeholder="Enter your new email address" type="email" />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />

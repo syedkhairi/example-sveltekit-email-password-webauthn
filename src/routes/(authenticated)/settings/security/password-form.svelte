@@ -35,7 +35,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Current password</Form.Label>
-				<Input {...props} type="password" bind:value={$formData.currentPassword} required autocomplete="current-password" />
+				<Input {...props} type="password" bind:value={$formData.currentPassword} required autocomplete="current-password" placeholder="Enter your current password" />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
@@ -44,7 +44,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>New password</Form.Label>
-				<Input {...props} type="password" bind:value={$formData.newPassword} required autocomplete="new-password" />
+				<Input {...props} type="password" bind:value={$formData.newPassword} required autocomplete="new-password" placeholder="Enter your new password" />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />

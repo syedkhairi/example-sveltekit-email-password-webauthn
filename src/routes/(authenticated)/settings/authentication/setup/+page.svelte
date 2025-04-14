@@ -23,7 +23,7 @@
 			href="/settings/authentication/totp/setup"
 		>
 			<Smartphone class="mr-1 h-4 w-4" />
-			Authenticator apps
+			Authenticator app
 		</Button>
 
 		<Button

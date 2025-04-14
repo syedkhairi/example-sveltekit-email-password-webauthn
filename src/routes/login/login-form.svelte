@@ -25,6 +25,7 @@
 
 	const form = superForm(data, {
 		validators: zodClient(loginFormSchema),
+		resetForm: true,
 		onResult: ({ result }) => {
 			if (result.type === "failure") {
 				toast.error(result.data?.message ?? "An error occurred");
@@ -36,7 +37,7 @@
 		},
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, submitting } = form;
 
 	let passkeyErrorMessage = $state<string | null>("")
 </script>
@@ -47,12 +48,19 @@
 		<Card.Description>Enter your details below to login to your account</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		<form method="POST" class="grid gap-2" use:enhance>
+		<form method="POST" class="grid gap-3" use:enhance>
             <Form.Field name="email" {form}>
                 <Form.Control>
                     {#snippet children({ props })}
                         <Form.Label>Email address</Form.Label>
-                        <Input {...props} type="email" required placeholder="syed@feedr.com" bind:value={$formData.email} autocomplete="email" />
+                        <Input 
+							{...props} 
+							type="email" 
+							required 
+							placeholder="syed@feedr.com" 
+							bind:value={$formData.email} 
+							autocomplete="email" 
+							disabled={$submitting} />
                     {/snippet}
                 </Form.Control>
                 <Form.FieldErrors />
@@ -67,54 +75,67 @@
 								Forgot your password?
 							</a>
 						</div>
-                        <Input {...props} type="password" required bind:value={$formData.password} autocomplete="current-password" />
+                        <Input 
+							{...props} 
+							type="password" 
+							required 
+							bind:value={$formData.password} 
+							autocomplete="current-password" 
+							disabled={$submitting} />
                     {/snippet}
                 </Form.Control>
                 <Form.FieldErrors />
             </Form.Field>
 
-            <Form.Button class="w-full">Sign in</Form.Button>
+			<div class="space-y-4">
+				<Form.Button 
+					class="w-full" 
+					disabled={($formData.email === "" || $formData.password === "") || $submitting}
+					>
+					Sign in
+				</Form.Button>
 
-			<Button 
-				variant="outline" 
-				class="w-full"
-				onclick={async () => {
-					const challenge = await createChallenge();
-		
-					const credential = await navigator.credentials.get({
-						publicKey: {
-							challenge,
-							userVerification: "required"
+				<Button 
+					variant="outline" 
+					class="w-full"
+					onclick={async () => {
+						const challenge = await createChallenge();
+			
+						const credential = await navigator.credentials.get({
+							publicKey: {
+								challenge,
+								userVerification: "required"
+							}
+						});
+			
+						if (!(credential instanceof PublicKeyCredential)) {
+							throw new Error("Failed to create public key");
 						}
-					});
-		
-					if (!(credential instanceof PublicKeyCredential)) {
-						throw new Error("Failed to create public key");
-					}
-					if (!(credential.response instanceof AuthenticatorAssertionResponse)) {
-						throw new Error("Unexpected error");
-					}
-		
-					const response = await fetch("/login/passkey", {
-						method: "POST",
-						// this example uses JSON but you can use something like CBOR to get something more compact
-						body: JSON.stringify({
-							credential_id: encodeBase64(new Uint8Array(credential.rawId)),
-							signature: encodeBase64(new Uint8Array(credential.response.signature)),
-							authenticator_data: encodeBase64(new Uint8Array(credential.response.authenticatorData)),
-							client_data_json: encodeBase64(new Uint8Array(credential.response.clientDataJSON))
-						})
-					});
-		
-					if (response.ok) {
-						goto("/");
-					} else {
-						passkeyErrorMessage = await response.text();
-					}
-				}}
-			>
-				Sign in with a passkey
-			</Button>
+						if (!(credential.response instanceof AuthenticatorAssertionResponse)) {
+							throw new Error("Unexpected error");
+						}
+			
+						const response = await fetch("/login/passkey", {
+							method: "POST",
+							// this example uses JSON but you can use something like CBOR to get something more compact
+							body: JSON.stringify({
+								credential_id: encodeBase64(new Uint8Array(credential.rawId)),
+								signature: encodeBase64(new Uint8Array(credential.response.signature)),
+								authenticator_data: encodeBase64(new Uint8Array(credential.response.authenticatorData)),
+								client_data_json: encodeBase64(new Uint8Array(credential.response.clientDataJSON))
+							})
+						});
+			
+						if (response.ok) {
+							goto("/");
+						} else {
+							passkeyErrorMessage = await response.text();
+						}
+					}}
+				>
+					Sign in with a passkey
+				</Button>
+			</div>
         </form>
 
 		<div class="mt-4 text-center text-sm">

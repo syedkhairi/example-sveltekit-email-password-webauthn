@@ -33,7 +33,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Name</Form.Label>
-				<Input {...props} bind:value={$formData.name} />
+				<Input {...props} bind:value={$formData.name} placeholder="Enter your preferred name" required autocomplete="name" />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
@@ -43,7 +43,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Username</Form.Label>
-				<Input {...props} bind:value={$formData.username} />
+				<Input {...props} bind:value={$formData.username} placeholder="Enter your username" required autocomplete="username" />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />

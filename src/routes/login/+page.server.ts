@@ -38,32 +38,40 @@ export const actions: Actions = {
 };
 
 async function action(event: RequestEvent) {
+	const form = await superValidate(event.request, zod(loginFormSchema));
+
+	if (!form.valid) return fail(400, { form });
+
 	// TODO: Assumes X-Forwarded-For is always included.
 	const clientIP = event.request.headers.get("X-Forwarded-For");
 	if (clientIP !== null && !ipBucket.check(clientIP, 1)) {
 		return fail(429, {
+			form,
 			message: "Too many requests",
 			email: ""
 		});
 	}
 
-	const formData = await event.request.formData();
-	const email = formData.get("email");
-	const password = formData.get("password");
+	const { data: formData } = form;
+	const email = formData.email;
+	const password = formData.password;
 	if (typeof email !== "string" || typeof password !== "string") {
 		return fail(400, {
+			form,
 			message: "Invalid or missing fields",
 			email: ""
 		});
 	}
 	if (email === "" || password === "") {
 		return fail(400, {
+			form,
 			message: "Please enter your email and password.",
 			email
 		});
 	}
 	if (!verifyEmailInput(email)) {
 		return fail(400, {
+			form,
 			message: "Invalid email",
 			email
 		});
@@ -71,18 +79,21 @@ async function action(event: RequestEvent) {
 	const user = getUserFromEmail(email);
 	if (user === null) {
 		return fail(400, {
+			form,
 			message: "Account does not exist",
 			email
 		});
 	}
 	if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
 		return fail(429, {
+			form,
 			message: "Too many requests",
 			email: ""
 		});
 	}
 	if (!throttler.consume(user.id)) {
 		return fail(429, {
+			form,
 			message: "Too many requests",
 			email: ""
 		});
@@ -91,6 +102,7 @@ async function action(event: RequestEvent) {
 	const validPassword = await verifyPasswordHash(passwordHash, password);
 	if (!validPassword) {
 		return fail(400, {
+			form,
 			message: "Invalid password",
 			email
 		});

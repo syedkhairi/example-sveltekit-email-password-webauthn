@@ -40,7 +40,7 @@
     <Form.Field {form} name="code">
         <Form.Control>
             {#snippet children({ props })}
-                <InputOTP.Root maxlength={6} {...props} bind:value={$formData.code}>
+                <InputOTP.Root maxlength={8} {...props} bind:value={$formData.code}>
                 {#snippet children({ cells })}
                     <InputOTP.Group>
                     {#each cells as cell (cell)}

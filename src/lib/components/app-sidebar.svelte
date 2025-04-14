@@ -1,11 +1,14 @@
 <script lang="ts" module>
 	import ListCheck from "@lucide/svelte/icons/list-check";
+	import Newspaper from "@lucide/svelte/icons/newspaper";
+	import MessageSquareText from "@lucide/svelte/icons/message-square-text";
 	import Layers from "@lucide/svelte/icons/layers";
 	import Square from "@lucide/svelte/icons/square";
 	import LifeBuoy from "@lucide/svelte/icons/life-buoy";
 	import Send from "@lucide/svelte/icons/send";
 	import Settings2 from "@lucide/svelte/icons/settings-2";
 	import SquareTerminal from "@lucide/svelte/icons/square-terminal";
+	import BadgeCheck from "@lucide/svelte/icons/badge-check";
 
 	const data = {
 		user: {
@@ -17,8 +20,33 @@
 			{
 				title: "Feeds",
 				url: "/feeds",
-				icon: ListCheck,
+				icon: Newspaper,
 				isActive: true,
+				items: [
+					{
+						title: "All feeds",
+						url: "#",
+					},
+					{
+						title: "Premium",
+						url: "#",
+					},
+				]
+			},
+			{
+				title: "Posts",
+				url: "#",
+				icon: MessageSquareText,
+				items: [
+					{
+						title: "Published",
+						url: "#",
+					},
+					{
+						title: "Scheduled",
+						url: "#",
+					},
+				]
 			},
 			{
 				title: "Playground",
@@ -34,16 +62,6 @@
 				title: "Settings",
 				url: "/settings",
 				icon: Settings2,
-				items: [
-					{
-						title: "General",
-						url: "/settings#general",
-					},
-					{
-						title: "Billing",
-						url: "/settings#billing",
-					},
-				],
 			},
 		],
 		navSecondary: [
@@ -75,6 +93,13 @@
 				icon: Square,
 			},
 		],
+		premium_feeds: [
+			{
+				name: "London Cycling",
+				url: "#",
+				icon: BadgeCheck,
+			},
+		]
 	};
 </script>
 
@@ -86,6 +111,7 @@
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import Command from "@lucide/svelte/icons/command";
 	import type { ComponentProps } from "svelte";
+	import NavPremiumFeeds from "./nav-premium-feeds.svelte";
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
@@ -115,6 +141,7 @@
 	<Sidebar.Content>
 		<NavMain items={data.navMain} />
 		<NavFeeds feeds={data.feeds} />
+		<NavPremiumFeeds feeds={data.premium_feeds} />
 		<NavSecondary items={data.navSecondary} class="mt-auto" />
 	</Sidebar.Content>
 	<Sidebar.Footer>

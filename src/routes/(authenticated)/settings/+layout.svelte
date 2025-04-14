@@ -16,8 +16,16 @@
 			href: "/settings/security",
 		},
 		{
+			title: "Connections",
+			href: "/settings/connections",
+		},
+		{
 			title: "Billing",
 			href: "/settings/billing",
+		},
+		{
+			title: "Monetisation",
+			href: "/settings/monetisation",
 		},
 	];
 </script>

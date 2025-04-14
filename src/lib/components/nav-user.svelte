@@ -5,7 +5,10 @@
 	import CreditCard from "@lucide/svelte/icons/credit-card";
 	import LogOut from "@lucide/svelte/icons/log-out";
 	import Sparkles from "@lucide/svelte/icons/sparkles";
+	import Sun from "@lucide/svelte/icons/sun";
+	import Moon from "@lucide/svelte/icons/moon";
 
+	import { toggleMode, mode, setMode } from "mode-watcher";
 	import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
@@ -67,25 +70,47 @@
 				<DropdownMenu.Separator />
 				<DropdownMenu.Group>
 					<DropdownMenu.Item>
-						<Sparkles />
-						Upgrade to Pro
+						{#snippet child({ props })}
+							<a href="/settings/billing" {...props}>
+								<Sparkles />
+								Upgrade to Pro
+							</a>
+						{/snippet}
 					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Group>
-					<DropdownMenu.Item>
-						<BadgeCheck />
-						Account
-					</DropdownMenu.Item>
-					<DropdownMenu.Item>
-						<CreditCard />
-						Billing
-					</DropdownMenu.Item>
+					<DropdownMenu.Sub>
+						<DropdownMenu.SubTrigger>
+							<Sun
+								class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+							/>
+							<Moon
+								class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+							/>
+							<span>Change theme</span>
+						</DropdownMenu.SubTrigger>
+						<DropdownMenu.SubContent>
+							<DropdownMenu.Item onclick={() => setMode("light")}>
+								Light mode
+							</DropdownMenu.Item>
+							<DropdownMenu.Item onclick={() => setMode("dark")}>
+								Dark mode
+							</DropdownMenu.Item>
+							<DropdownMenu.Item onclick={() => setMode("system")}>
+								System
+							</DropdownMenu.Item>
+						</DropdownMenu.SubContent>
+					</DropdownMenu.Sub>
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item>
-					<LogOut />
-					Sign out
+					{#snippet child({ props })}
+						<a href="/api/sign-out" {...props}>
+							<LogOut />
+							Sign out
+						</a>
+					{/snippet}
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>

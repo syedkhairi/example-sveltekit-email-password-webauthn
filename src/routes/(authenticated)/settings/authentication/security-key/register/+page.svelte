@@ -119,7 +119,7 @@
 						<Form.Description>
 							This is usually the name of the device you are using to register the security key.
 						</Form.Description>
-						<Input {...props} bind:value={$formData.credentialName} placeholder="Macbook Air" />
+						<Input {...props} bind:value={$formData.credentialName} placeholder="Yubikey" required />
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />

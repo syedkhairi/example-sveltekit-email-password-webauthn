@@ -16,8 +16,11 @@ import { getPasswordReset2FARedirect } from "$lib/server/2fa";
 
 import type { Actions, RequestEvent } from "./$types";
 import type { SessionFlags } from "$lib/server/session";
+import { superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
+import { formSchema } from "./reset-password-form.svelte";
 
-export async function load(event: RequestEvent) {
+export const load = (async (event: RequestEvent) => {
 	const { session, user } = validatePasswordResetSessionRequest(event);
 	if (session === null) {
 		return redirect(302, "/forgot-password");
@@ -28,34 +31,44 @@ export async function load(event: RequestEvent) {
 	if (user.registered2FA && !session.twoFactorVerified) {
 		return redirect(302, getPasswordReset2FARedirect(user));
 	}
-	return {};
-}
+	return {
+		form: await superValidate(zod(formSchema))
+	};
+})
 
 export const actions: Actions = {
 	default: action
 };
 
 async function action(event: RequestEvent) {
+	const form = await superValidate(event.request, zod(formSchema));
+
+	if (!form.valid) return fail(400, { form });
+
 	const { session: passwordResetSession, user } = validatePasswordResetSessionRequest(event);
 	if (passwordResetSession === null) {
 		return fail(401, {
+			form,
 			message: "Not authenticated"
 		});
 	}
 	if (!passwordResetSession.emailVerified) {
 		return fail(403, {
+			form,
 			message: "Forbidden"
 		});
 	}
 	if (user.registered2FA && !passwordResetSession.twoFactorVerified) {
 		return fail(403, {
+			form,
 			message: "Forbidden"
 		});
 	}
-	const formData = await event.request.formData();
-	const password = formData.get("password");
+	const { data: formData } = form;
+	const password = formData.password;
 	if (typeof password !== "string") {
 		return fail(400, {
+			form,
 			message: "Invalid or missing fields"
 		});
 	}
@@ -63,6 +76,7 @@ async function action(event: RequestEvent) {
 	const strongPassword = await verifyPasswordStrength(password);
 	if (!strongPassword) {
 		return fail(400, {
+			form,
 			message: "Weak password"
 		});
 	}
