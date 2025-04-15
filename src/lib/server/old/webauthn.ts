@@ -1,5 +1,5 @@
 import { encodeHexLowerCase } from "@oslojs/encoding";
-import { db } from "./db";
+import { db } from "../db";
 
 const challengeBucket = new Set<string>();
 
@@ -38,7 +38,7 @@ export function getPasskeyCredential(credentialId: Uint8Array): WebAuthnUserCred
 	const row = db.queryOne("SELECT id, user_id, name, algorithm, public_key FROM passkey_credential WHERE id = ?", [
 		credentialId
 	]);
-	if (row === null) {
+	if (!row) {
 		return null;
 	}
 	const credential: WebAuthnUserCredential = {
@@ -56,7 +56,7 @@ export function getUserPasskeyCredential(userId: number, credentialId: Uint8Arra
 		"SELECT id, user_id, name, algorithm, public_key FROM passkey_credential WHERE id = ? AND user_id = ?",
 		[credentialId, userId]
 	);
-	if (row === null) {
+	if (!row) {
 		return null;
 	}
 	const credential: WebAuthnUserCredential = {
@@ -108,7 +108,7 @@ export function getUserSecurityKeyCredential(userId: number, credentialId: Uint8
 		"SELECT id, user_id, name, algorithm, public_key FROM security_key_credential WHERE id = ? AND user_id = ?",
 		[credentialId, userId]
 	);
-	if (row === null) {
+	if (!row) {
 		return null;
 	}
 	const credential: WebAuthnUserCredential = {

@@ -3,25 +3,25 @@ import * as table from '$lib/server/db/schema';
 import { sql, eq, and } from 'drizzle-orm';
 import { generateRandomRecoveryCode } from "$lib/server/utils";
 import { ExpiringTokenBucket } from "$lib/server/rate-limit";
-import { decryptToString, encryptString } from "$lib/server/encryption";
+import { decryptToString, encryptString } from "$lib/server/auth/encryption";
 import { decodeBase64, encodeBase64 } from '@oslojs/encoding';
 
-import type { User } from "$lib/server/user";
+import type { User } from "$lib/server/auth/user";
 
 export const recoveryCodeBucket = new ExpiringTokenBucket<number>(3, 60 * 60);
 
 export async function resetUser2FAWithRecoveryCode(userId: number, recoveryCode: string): Promise<boolean> {
 	// Retrieve user's recovery code
-	const userRow = await db.select({ recoveryCode: table.user.recovery_code })
+	const [user] = await db.select({ recoveryCode: table.user.recovery_code })
 		.from(table.user)
 		.where(eq(table.user.id, userId))
 		.limit(1);
 	
-	if (userRow.length === 0) {
+	if (!user) {
 		return false;
 	}
 	
-	const encryptedRecoveryCode = decodeBase64(userRow[0].recoveryCode);
+	const encryptedRecoveryCode = user.recoveryCode;
 	const userRecoveryCode = decryptToString(encryptedRecoveryCode);
 	if (recoveryCode !== userRecoveryCode) {
 		return false;
@@ -29,7 +29,6 @@ export async function resetUser2FAWithRecoveryCode(userId: number, recoveryCode:
 
 	const newRecoveryCode = generateRandomRecoveryCode();
 	const encryptedNewRecoveryCode = encryptString(newRecoveryCode);
-	const encodedEncryptedNewRecoveryCode = encodeBase64(encryptedNewRecoveryCode);
 
 	// Use a transaction for all database operations
 	try {
@@ -38,12 +37,12 @@ export async function resetUser2FAWithRecoveryCode(userId: number, recoveryCode:
 			// Update user's recovery code
 			const updateResult = await tx.update(table.user)
 				.set({
-					recovery_code: encodedEncryptedNewRecoveryCode,
+					recovery_code: encryptedNewRecoveryCode,
 				})
 				.where(
 					and(
 						eq(table.user.id, userId),
-						eq(table.user.recovery_code, userRecoveryCode)
+						eq(table.user.recovery_code, encryptedRecoveryCode)
 					)
 				);
 			

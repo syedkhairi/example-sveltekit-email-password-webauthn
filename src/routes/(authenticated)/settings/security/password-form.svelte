@@ -20,14 +20,27 @@
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import * as Form from "$lib/components/ui/form/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
+	import { browser } from "$app/environment";
+	import Loader from "@lucide/svelte/icons/loader";
+	import { cn } from "$lib/utils";
+	import { toast } from "svelte-sonner";
 
 	let { data }: { data: SuperValidated<Infer<PasswordFormSchema>> } = $props();
 
 	const form = superForm(data, {
-		resetForm: false,
+		resetForm: true,
 		validators: zodClient(passwordFormSchema),
+		onResult: ({ result }) => {
+			if (result.type === "failure") {
+				toast.error(result.data?.message ?? "An error occurred");
+			}
+
+			if (result.type === "success") {
+				toast.success(result.data?.message ?? "Success");
+			}
+		},
 	});
-	const { form: formData, enhance, validate } = form;
+	const { form: formData, enhance, submitting } = form;
 </script>
 
 <form method="POST" class="space-y-3" use:enhance action="?/update_password">
@@ -49,5 +62,12 @@
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
-	<Form.Button>Save</Form.Button>
+	<Form.Button
+		disabled={!$formData.currentPassword || !$formData.newPassword || $submitting}  
+	>
+		Save
+		<Loader class={cn("ml-0.5 size-3 animate-spin" , {
+			"hidden": !$submitting,
+		})}/>
+	</Form.Button>
 </form>

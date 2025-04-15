@@ -23,7 +23,7 @@ export async function getUserEmailVerificationRequest(userId: number, id: string
 				eq(table.emailVerificationRequest.user_id, userId),
 			)
 		)
-	if (row === null) {
+	if (!row) {
 		return row;
 	}
 	const request: EmailVerificationRequest = {

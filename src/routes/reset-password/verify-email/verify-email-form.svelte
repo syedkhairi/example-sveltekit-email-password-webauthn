@@ -19,6 +19,8 @@
 	import { toast } from "svelte-sonner";
 	import { browser, dev } from "$app/environment";
 	import * as Form from "$lib/components/ui/form/index.js";
+	import Loader from "@lucide/svelte/icons/loader";
+	import { cn } from "$lib/utils";
 
     let { data }: { data: SuperValidated<Infer<FormSchema>> } = $props();
 
@@ -33,7 +35,7 @@
 		}
 	});
 	
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, submitting } = form;
 </script>
 
 <form method="post" use:enhance>
@@ -56,7 +58,14 @@
         </Form.Description>
         <Form.FieldErrors />
     </Form.Field>
-    <Form.Button>Submit</Form.Button>
+	<Form.Button
+		disabled={($formData.code.length < 8) || $submitting}    
+	>
+		Submit
+		<Loader class={cn("ml-0.5 size-3 animate-spin" , {
+			"hidden": !$submitting,
+		})}/>
+	</Form.Button>
 </form>
 
 {#if browser}

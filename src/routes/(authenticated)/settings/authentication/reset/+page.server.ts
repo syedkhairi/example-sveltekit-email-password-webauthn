@@ -1,4 +1,4 @@
-import { recoveryCodeBucket, resetUser2FAWithRecoveryCode } from "$lib/server/2fa";
+import { recoveryCodeBucket, resetUser2FAWithRecoveryCode } from "$lib/server/auth/2fa";
 import { fail, redirect } from "@sveltejs/kit";
 
 import type { Actions, RequestEvent } from "./$types";
@@ -57,7 +57,7 @@ async function action(event: RequestEvent) {
 			message: "Too many requests"
 		});
 	}
-	const valid = resetUser2FAWithRecoveryCode(event.locals.user.id, code);
+	const valid = await resetUser2FAWithRecoveryCode(event.locals.user.id, code);
 	if (!valid) {
 		return fail(400, {
 			message: "Invalid recovery code"

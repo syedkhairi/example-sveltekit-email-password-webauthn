@@ -11,8 +11,10 @@ const bytea = customType<{
 
 export const user = pgTable('user', {
   id: serial('id').primaryKey().notNull(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
   email: text('email').notNull().unique(),
   username: text('username').notNull(),
+  name: text('name').notNull().default(''),
   password_hash: text('password_hash').notNull(),
   email_verified: integer('email_verified').notNull().default(0),
   recovery_code: bytea('recovery_code').notNull(),
@@ -22,6 +24,7 @@ export const user = pgTable('user', {
 
 export const session = pgTable('session', {
   id: text('id').primaryKey().notNull(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
   user_id: integer('user_id').notNull().references(() => user.id),
   expires_at: integer('expires_at').notNull(),
   two_factor_verified: integer('two_factor_verified').notNull().default(0),
@@ -29,6 +32,7 @@ export const session = pgTable('session', {
 
 export const emailVerificationRequest = pgTable('email_verification_request', {
   id: text('id').primaryKey().notNull(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
   user_id: integer('user_id').notNull().references(() => user.id),
   email: text('email').notNull(),
   code: text('code').notNull(),
@@ -37,6 +41,7 @@ export const emailVerificationRequest = pgTable('email_verification_request', {
 
 export const passwordResetSession = pgTable('password_reset_session', {
   id: text('id').primaryKey().notNull(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
   user_id: integer('user_id').notNull().references(() => user.id),
   email: text('email').notNull(),
   code: text('code').notNull(),
@@ -47,12 +52,14 @@ export const passwordResetSession = pgTable('password_reset_session', {
 
 export const totpCredential = pgTable('totp_credential', {
   id: serial('id').primaryKey().notNull(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
   user_id: integer('user_id').notNull().references(() => user.id).unique(),
   key: bytea('key').notNull(),
 });
 
 export const passkeyCredential = pgTable('passkey_credential', {
   id: bytea('id').primaryKey().notNull(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
   user_id: integer('user_id').notNull().references(() => user.id),
   name: text('name').notNull(),
   algorithm: integer('algorithm').notNull(),
@@ -61,6 +68,7 @@ export const passkeyCredential = pgTable('passkey_credential', {
 
 export const securityKeyCredential = pgTable('security_key_credential', {
   id: bytea('id').primaryKey().notNull(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
   user_id: integer('user_id').notNull().references(() => user.id),
   name: text('name').notNull(),
   algorithm: integer('algorithm').notNull(),

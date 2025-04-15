@@ -1,5 +1,5 @@
 import { RefillingTokenBucket } from "$lib/server/rate-limit";
-import { validateSessionToken, setSessionTokenCookie, deleteSessionTokenCookie } from "$lib/server/session";
+import { validateSessionToken, setSessionTokenCookie, deleteSessionTokenCookie } from "$lib/server/auth/session";
 import { sequence } from "@sveltejs/kit/hooks";
 
 import type { Handle } from "@sveltejs/kit";
@@ -34,7 +34,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	const { session, user } = validateSessionToken(token);
+	const { session, user } = await validateSessionToken(token);
 	if (session !== null) {
 		setSessionTokenCookie(event, token, session.expiresAt);
 	} else {

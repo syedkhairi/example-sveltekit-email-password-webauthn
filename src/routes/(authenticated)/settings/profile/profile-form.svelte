@@ -19,16 +19,18 @@
 	import * as Form from "$lib/components/ui/form/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { browser, dev } from "$app/environment";
+	import { cn } from "$lib/utils";
+	import Loader from "@lucide/svelte/icons/loader";
 
 	let { data }: { data: SuperValidated<Infer<ProfileFormSchema>> } = $props();
 
 	const form = superForm(data, {
 		validators: zodClient(profileFormSchema),
 	});
-	const { form: formData, enhance, validate } = form;
+	const { form: formData, enhance, submitting, tainted } = form;
 </script>
 
-<form method="POST" class="space-y-3" use:enhance action="?/update_name">
+<form method="POST" class="space-y-3" use:enhance action="?/update_name_username">
 	<Form.Field name="name" {form}>
 		<Form.Control>
 			{#snippet children({ props })}
@@ -49,7 +51,14 @@
 		<Form.FieldErrors />
 	</Form.Field>
 	
-	<Form.Button>Save</Form.Button>
+	<Form.Button
+		disabled={$submitting || !$tainted}   
+	>
+		Save
+		<Loader class={cn("ml-0.5 size-3 animate-spin" , {
+			"hidden": !$submitting,
+		})}/>
+	</Form.Button>
 </form>
 
 {#if browser}

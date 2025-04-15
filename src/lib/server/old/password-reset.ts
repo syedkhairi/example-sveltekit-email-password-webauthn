@@ -1,6 +1,6 @@
-import { db } from "./db";
+import { db } from "../db";
 import { encodeHexLowerCase } from "@oslojs/encoding";
-import { generateRandomOTP } from "./utils";
+import { generateRandomOTP } from "../utils";
 import { sha256 } from "@oslojs/crypto/sha2";
 
 import type { RequestEvent } from "@sveltejs/kit";
@@ -39,7 +39,7 @@ LEFT JOIN security_key_credential ON user.id = security_key_credential.user_id
 WHERE password_reset_session.id = ?`,
 		[sessionId]
 	);
-	if (row === null) {
+	if (!row) {
 		return { session: null, user: null };
 	}
 	const session: PasswordResetSession = {

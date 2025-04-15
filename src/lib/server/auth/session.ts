@@ -4,7 +4,7 @@ import { eq, and, sql } from 'drizzle-orm';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
 
-import type { User } from "$lib/server/user";
+import type { User } from "$lib/server/auth/user";
 import type { RequestEvent } from "@sveltejs/kit";
 
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
@@ -34,7 +34,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 		.leftJoin(table.securityKeyCredential, eq(table.user.id, table.securityKeyCredential.user_id))
 		.where(eq(table.session.id, sessionId))
 		.limit(1);
-	if (row === null) {
+	if (!row) {
 		return { session: null, user: null };
 	}
 	const session: Session = {

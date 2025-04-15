@@ -1,13 +1,13 @@
 import {
 	validatePasswordResetSessionRequest,
 	setPasswordResetSessionAsEmailVerified
-} from "$lib/server/password-reset";
+} from "$lib/server/auth/password-reset";
 import { ExpiringTokenBucket } from "$lib/server/rate-limit";
-import { setUserAsEmailVerifiedIfEmailMatches } from "$lib/server/user";
+import { setUserAsEmailVerifiedIfEmailMatches } from "$lib/server/auth/user";
 import { fail, redirect } from "@sveltejs/kit";
 
 import type { Actions, RequestEvent } from "./$types";
-import { getPasswordReset2FARedirect } from "$lib/server/2fa";
+import { getPasswordReset2FARedirect } from "$lib/server/auth/2fa";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { formSchema } from "./verify-email-form.svelte";
@@ -15,7 +15,7 @@ import { formSchema } from "./verify-email-form.svelte";
 const bucket = new ExpiringTokenBucket<number>(5, 60 * 30);
 
 export async function load(event: RequestEvent) {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
 	if (session === null) {
 		return redirect(302, "/forgot-password");
 	}
@@ -36,7 +36,7 @@ export const actions: Actions = {
 };
 
 async function action(event: RequestEvent) {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
 	if (session === null) {
 		return fail(401, {
 			message: "Not authenticated"
@@ -74,8 +74,8 @@ async function action(event: RequestEvent) {
 		});
 	}
 	bucket.reset(session.userId);
-	setPasswordResetSessionAsEmailVerified(session.id);
-	const emailMatches = setUserAsEmailVerifiedIfEmailMatches(session.userId, session.email);
+	await setPasswordResetSessionAsEmailVerified(session.id);
+	const emailMatches = await setUserAsEmailVerifiedIfEmailMatches(session.userId, session.email);
 	if (!emailMatches) {
 		return fail(400, {
 			message: "Please restart the process"

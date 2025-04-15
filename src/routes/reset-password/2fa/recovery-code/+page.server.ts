@@ -1,11 +1,11 @@
-import { validatePasswordResetSessionRequest } from "$lib/server/password-reset";
+import { validatePasswordResetSessionRequest } from "$lib/server/auth/password-reset";
 import { fail, redirect } from "@sveltejs/kit";
-import { recoveryCodeBucket, resetUser2FAWithRecoveryCode } from "$lib/server/2fa";
+import { recoveryCodeBucket, resetUser2FAWithRecoveryCode } from "$lib/server/auth/2fa";
 
 import type { Actions, RequestEvent } from "./$types";
 
 export async function load(event: RequestEvent) {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
 
 	if (session === null) {
 		return redirect(302, "/forgot-password");
@@ -27,7 +27,7 @@ export const actions: Actions = {
 };
 
 async function action(event: RequestEvent) {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
 	if (session === null) {
 		return fail(401, {
 			message: "Not authenticated"
@@ -61,7 +61,7 @@ async function action(event: RequestEvent) {
 			message: "Too many requests"
 		});
 	}
-	const valid = resetUser2FAWithRecoveryCode(session.userId, code);
+	const valid = await resetUser2FAWithRecoveryCode(session.userId, code);
 	if (!valid) {
 		return fail(400, {
 			message: "Invalid code"

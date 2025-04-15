@@ -1,8 +1,8 @@
 import { db } from "$lib/server/db/";
 import * as table from '$lib/server/db/schema';
 import { and, eq } from 'drizzle-orm';
-import { decryptToString, encryptString } from "$lib/server/encryption";
-import { hashPassword } from "$lib/server/password";
+import { decryptToString, encryptString } from "$lib/server/auth/encryption";
+import { hashPassword } from "$lib/server/auth/password";
 import { generateRandomRecoveryCode } from "$lib/server/utils";
 
 export function verifyUsernameInput(username: string): boolean {
@@ -25,7 +25,7 @@ export async function createUser(email: string, username: string, password: stri
 		.returning({
 			id: table.user.id,
 		})
-	if (row === null) {
+	if (!row) {
 		throw new Error("Unexpected error");
 	}
 	const user: User = {
@@ -84,7 +84,7 @@ export async function getUserPasswordHash(userId: number): Promise<string> {
 		.from(table.user)
 		.where(eq(table.user.id, userId))
 		.limit(1);
-	if (row === null) {
+	if (!row) {
 		throw new Error("Invalid user ID");
 	}
 	return row.password_hash;
@@ -98,7 +98,7 @@ export async function getUserRecoverCode(userId: number): Promise<string> {
 		.from(table.user)
 		.where(eq(table.user.id, userId))
 		.limit(1);
-	if (row === null) {
+	if (!row) {
 		throw new Error("Invalid user ID");
 	}
 	return decryptToString(row.recovery_code);
@@ -141,7 +141,7 @@ export async function getUserFromEmail(email: string): Promise<User | null> {
 		.leftJoin(table.securityKeyCredential, eq(table.user.id, table.securityKeyCredential.user_id))
 		.where(eq(table.user.email, email))
 		.limit(1);
-	if (row === null) {
+	if (!row) {
 		return null;
 	}
 	const user: User = {

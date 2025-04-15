@@ -1,20 +1,20 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { checkEmailAvailability, verifyEmailInput } from "$lib/server/email";
-import { createUser, verifyUsernameInput } from "$lib/server/user";
+import { checkEmailAvailability, verifyEmailInput } from "$lib/server/auth/email";
+import { createUser, verifyUsernameInput } from "$lib/server/auth/user";
 import { RefillingTokenBucket } from "$lib/server/rate-limit";
-import { verifyPasswordStrength } from "$lib/server/password";
-import { createSession, generateSessionToken, setSessionTokenCookie } from "$lib/server/session";
+import { verifyPasswordStrength } from "$lib/server/auth/password";
+import { createSession, generateSessionToken, setSessionTokenCookie } from "$lib/server/auth/session";
 import {
 	createEmailVerificationRequest,
 	sendVerificationEmail,
 	setEmailVerificationRequestCookie
-} from "$lib/server/email-verification";
-import { get2FARedirect } from "$lib/server/2fa";
+} from "$lib/server/auth/email-verification";
+import { get2FARedirect } from "$lib/server/auth/2fa";
 import { registerFormSchema } from "./signup-form.svelte";
 import { zod } from "sveltekit-superforms/adapters";
 import { superValidate } from "sveltekit-superforms";
 
-import type { SessionFlags } from "$lib/server/session";
+import type { SessionFlags } from "$lib/server/auth/session";
 import type { Actions, PageServerLoadEvent, RequestEvent } from "./$types";
 
 const ipBucket = new RefillingTokenBucket<string>(3, 10);
@@ -108,7 +108,7 @@ async function action(event: RequestEvent) {
 		});
 	}
 	const user = await createUser(email, username, password);
-	const emailVerificationRequest = createEmailVerificationRequest(user.id, user.email);
+	const emailVerificationRequest = await createEmailVerificationRequest(user.id, user.email);
 	sendVerificationEmail(emailVerificationRequest.email, emailVerificationRequest.code);
 	setEmailVerificationRequestCookie(event, emailVerificationRequest);
 
@@ -116,7 +116,7 @@ async function action(event: RequestEvent) {
 		twoFactorVerified: false
 	};
 	const sessionToken = generateSessionToken();
-	const session = createSession(sessionToken, user.id, sessionFlags);
+	const session = await createSession(sessionToken, user.id, sessionFlags);
 	setSessionTokenCookie(event, sessionToken, session.expiresAt);
 	throw redirect(302, "/settings/authentication/setup");
 }

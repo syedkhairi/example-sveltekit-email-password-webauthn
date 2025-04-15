@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 import { redirect } from "@sveltejs/kit";
-import { deleteSessionTokenCookie, invalidateSession } from "$lib/server/session";
+import { deleteSessionTokenCookie, invalidateSession } from "$lib/server/auth/session";
 
 export const GET: RequestHandler = async (event) => {
 	if (event.locals.session === null) {

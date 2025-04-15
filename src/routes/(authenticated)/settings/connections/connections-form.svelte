@@ -27,7 +27,7 @@
     import Loader from "@lucide/svelte/icons/loader";
 	import SquareArrowOutUpRight from "@lucide/svelte/icons/square-arrow-out-up-right";
 	import { toast } from "svelte-sonner";
-	import { cn } from "$lib/utils";
+	import { cn, flyAndScale } from "$lib/utils";
 
 	let { data }: { data: SuperValidated<Infer<ConnectionsFormSchema>> } = $props();
 
@@ -99,7 +99,11 @@
 <form method="POST" use:enhance>
     <Form.Fieldset {form} name="accounts" class="space-y-4">
         {#each $formData.accounts as _, i}
-            <div class="flex flex-row items-start space-x-5 rounded-lg border p-4">
+            <div 
+                class="flex flex-row items-start space-x-5 rounded-lg border p-4"
+                in:flyAndScale
+                out:flyAndScale
+                >
                 <Avatar.Root class="size-10 rounded-lg">
                     <Avatar.Image src="" alt={$formData.accounts[i].handle} />
                     <Avatar.Fallback class="rounded-lg">{avatarLetter()}</Avatar.Fallback>

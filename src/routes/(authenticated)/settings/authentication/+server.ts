@@ -1,4 +1,4 @@
-import { get2FARedirect } from "$lib/server/2fa";
+import { get2FARedirect } from "$lib/server/auth/2fa";
 import { redirect } from "@sveltejs/kit";
 
 import type { RequestEvent } from "./$types";

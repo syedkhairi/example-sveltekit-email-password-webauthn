@@ -1,4 +1,4 @@
-import { db } from "./db";
+import { db } from "../db";
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
 
@@ -19,7 +19,7 @@ WHERE session.id = ?
 		[sessionId]
 	);
 
-	if (row === null) {
+	if (!row) {
 		return { session: null, user: null };
 	}
 	const session: Session = {

@@ -1,6 +1,6 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { deleteSessionTokenCookie, invalidateSession } from "$lib/server/session";
-import { get2FARedirect } from "$lib/server/2fa";
+import { deleteSessionTokenCookie, invalidateSession } from "$lib/server/auth/session";
+import { get2FARedirect } from "$lib/server/auth/2fa";
 
 import type { Actions, PageServerLoadEvent, RequestEvent } from "./$types";
 
@@ -15,6 +15,7 @@ export function load(event: PageServerLoadEvent) {
 		return redirect(302, "/settings/authentication/setup");
 	}
 	if (!event.locals.session.twoFactorVerified) {
+		console.log("Session 2FA not verified");
 		return redirect(302, get2FARedirect(event.locals.user));
 	}
 	return redirect(302, "/feeds");
@@ -30,7 +31,7 @@ async function action(event: RequestEvent) {
 			message: "Not authenticated"
 		});
 	}
-	invalidateSession(event.locals.session.id);
+	await invalidateSession(event.locals.session.id);
 	deleteSessionTokenCookie(event);
 	return redirect(302, "/login");
 }

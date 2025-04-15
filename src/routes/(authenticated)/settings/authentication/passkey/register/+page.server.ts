@@ -1,5 +1,5 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { get2FARedirect } from "$lib/server/2fa";
+import { get2FARedirect } from "$lib/server/auth/2fa";
 import { bigEndian } from "@oslojs/binary";
 import {
 	parseAttestationObject,
@@ -12,15 +12,15 @@ import {
 } from "@oslojs/webauthn";
 import { ECDSAPublicKey, p256 } from "@oslojs/crypto/ecdsa";
 import { decodeBase64 } from "@oslojs/encoding";
-import { verifyWebAuthnChallenge, createPasskeyCredential, getUserPasskeyCredentials } from "$lib/server/webauthn";
-import { setSessionAs2FAVerified } from "$lib/server/session";
+import { verifyWebAuthnChallenge, createPasskeyCredential, getUserPasskeyCredentials } from "$lib/server/auth/webauthn";
+import { setSessionAs2FAVerified } from "$lib/server/auth/session";
 import { RSAPublicKey } from "@oslojs/crypto/rsa";
 import { SqliteError } from "better-sqlite3";
 import { formSchema } from "./+page.svelte";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
-import type { WebAuthnUserCredential } from "$lib/server/webauthn";
+import type { WebAuthnUserCredential } from "$lib/server/auth/webauthn";
 import type {
 	AttestationStatement,
 	AuthenticatorData,
@@ -41,7 +41,7 @@ export async function load(event: RequestEvent) {
 		return redirect(302, get2FARedirect(event.locals.user));
 	}
 
-	const credentials = getUserPasskeyCredentials(event.locals.user.id);
+	const credentials = await getUserPasskeyCredentials(event.locals.user.id);
 
 	const credentialUserId = new Uint8Array(8);
 	bigEndian.putUint64(credentialUserId, BigInt(event.locals.user.id), 0);
@@ -233,7 +233,7 @@ async function action(event: RequestEvent) {
 	}
 
 	// We don't have to worry about race conditions since queries are synchronous
-	const credentials = getUserPasskeyCredentials(event.locals.user.id);
+	const credentials = await getUserPasskeyCredentials(event.locals.user.id);
 	if (credentials.length >= 5) {
 		return fail(400, {
 			form,
@@ -242,7 +242,7 @@ async function action(event: RequestEvent) {
 	}
 
 	try {
-		createPasskeyCredential(credential);
+		await createPasskeyCredential(credential);
 	} catch (e) {
 		if (e instanceof SqliteError && e.code === "SQLITE_CONSTRAINT_PRIMARYKEY") {
 			return fail(400, {
@@ -257,7 +257,7 @@ async function action(event: RequestEvent) {
 	}
 
 	if (!event.locals.session.twoFactorVerified) {
-		setSessionAs2FAVerified(event.locals.session.id);
+		await setSessionAs2FAVerified(event.locals.session.id);
 	}
 
 	if (!event.locals.user.registered2FA) {

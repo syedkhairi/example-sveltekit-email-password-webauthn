@@ -9,8 +9,8 @@ import {
 import { decodePKIXECDSASignature, decodeSEC1PublicKey, p256, verifyECDSASignature } from "@oslojs/crypto/ecdsa";
 import { ObjectParser } from "@pilcrowjs/object-parser";
 import { decodeBase64 } from "@oslojs/encoding";
-import { verifyWebAuthnChallenge, getUserSecurityKeyCredential } from "$lib/server/webauthn";
-import { setSessionAs2FAVerified } from "$lib/server/session";
+import { verifyWebAuthnChallenge, getUserSecurityKeyCredential } from "$lib/server/auth/webauthn";
+import { setSessionAs2FAVerified } from "$lib/server/auth/session";
 import { decodePKCS1RSAPublicKey, sha256ObjectIdentifier, verifyRSASSAPKCS1v15Signature } from "@oslojs/crypto/rsa";
 import { sha256 } from "@oslojs/crypto/sha2";
 
@@ -115,7 +115,7 @@ export async function POST(event: RequestEvent) {
 		});
 	}
 
-	const credential = getUserSecurityKeyCredential(event.locals.user.id, credentialId);
+	const credential = await getUserSecurityKeyCredential(event.locals.user.id, credentialId);
 	if (credential === null) {
 		return new Response("Invalid credential", {
 			status: 400

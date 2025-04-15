@@ -9,8 +9,8 @@ import {
 import { decodePKIXECDSASignature, decodeSEC1PublicKey, p256, verifyECDSASignature } from "@oslojs/crypto/ecdsa";
 import { ObjectParser } from "@pilcrowjs/object-parser";
 import { decodeBase64 } from "@oslojs/encoding";
-import { verifyWebAuthnChallenge, getUserPasskeyCredential } from "$lib/server/webauthn";
-import { setSessionAs2FAVerified } from "$lib/server/session";
+import { verifyWebAuthnChallenge, getUserPasskeyCredential } from "$lib/server/auth/webauthn";
+import { setSessionAs2FAVerified } from "$lib/server/auth/session";
 import { decodePKCS1RSAPublicKey, sha256ObjectIdentifier, verifyRSASSAPKCS1v15Signature } from "@oslojs/crypto/rsa";
 import { sha256 } from "@oslojs/crypto/sha2";
 
@@ -115,7 +115,7 @@ export async function POST(event: RequestEvent) {
 		});
 	}
 
-	const credential = getUserPasskeyCredential(event.locals.user.id, credentialId);
+	const credential = await getUserPasskeyCredential(event.locals.user.id, credentialId);
 	if (credential === null) {
 		return new Response("Invalid credential", {
 			status: 400
@@ -144,7 +144,7 @@ export async function POST(event: RequestEvent) {
 		});
 	}
 
-	setSessionAs2FAVerified(event.locals.session.id);
+	await setSessionAs2FAVerified(event.locals.session.id);
 	return new Response(null, {
 		status: 204
 	});

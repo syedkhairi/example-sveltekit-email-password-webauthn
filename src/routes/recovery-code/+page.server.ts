@@ -1,6 +1,6 @@
-import { getUserRecoverCode } from "$lib/server/user";
+import { getUserRecoverCode } from "$lib/server/auth/user";
 import { redirect } from "@sveltejs/kit";
-import { get2FARedirect } from "$lib/server/2fa";
+import { get2FARedirect } from "$lib/server/auth/2fa";
 
 import type { RequestEvent } from "./$types";
 

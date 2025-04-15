@@ -1,10 +1,10 @@
 import { createTOTPKeyURI, verifyTOTP } from "@oslojs/otp";
 import { fail, redirect } from "@sveltejs/kit";
 import { decodeBase64, encodeBase64 } from "@oslojs/encoding";
-import { totpUpdateBucket, updateUserTOTPKey } from "$lib/server/totp";
-import { setSessionAs2FAVerified } from "$lib/server/session";
+import { totpUpdateBucket, updateUserTOTPKey } from "$lib/server/auth/totp";
+import { setSessionAs2FAVerified } from "$lib/server/auth/session";
 import { renderSVG } from "uqr";
-import { get2FARedirect } from "$lib/server/2fa";
+import { get2FARedirect } from "$lib/server/auth/2fa";
 
 import type { Actions, RequestEvent } from "./$types";
 import { superValidate } from "sveltekit-superforms";
@@ -119,8 +119,8 @@ async function action(event: RequestEvent) {
 			message: "Invalid code"
 		});
 	}
-	updateUserTOTPKey(event.locals.session.userId, key);
-	setSessionAs2FAVerified(event.locals.session.id);
+	await updateUserTOTPKey(event.locals.session.userId, key);
+	await setSessionAs2FAVerified(event.locals.session.id);
 	if (!event.locals.user.registered2FA) {
 		return redirect(302, "/recovery-code");
 	}

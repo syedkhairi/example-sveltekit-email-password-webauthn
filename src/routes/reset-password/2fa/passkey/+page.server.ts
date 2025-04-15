@@ -1,12 +1,12 @@
 import { redirect } from "@sveltejs/kit";
-import { getPasswordReset2FARedirect } from "$lib/server/2fa";
-import { getUserPasskeyCredentials } from "$lib/server/webauthn";
-import { validatePasswordResetSessionRequest } from "$lib/server/password-reset";
+import { getPasswordReset2FARedirect } from "$lib/server/auth/2fa";
+import { getUserPasskeyCredentials } from "$lib/server/auth/webauthn";
+import { validatePasswordResetSessionRequest } from "$lib/server/auth/password-reset";
 
 import type { RequestEvent } from "./$types";
 
 export async function load(event: RequestEvent) {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
 
 	if (session === null) {
 		return redirect(302, "/forgot-password");
@@ -23,7 +23,7 @@ export async function load(event: RequestEvent) {
 	if (!user.registeredPasskey) {
 		return redirect(302, getPasswordReset2FARedirect(user));
 	}
-	const credentials = getUserPasskeyCredentials(user.id);
+	const credentials = await getUserPasskeyCredentials(user.id);
 	return {
 		user,
 		credentials

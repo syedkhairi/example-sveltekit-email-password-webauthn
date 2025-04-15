@@ -1,13 +1,13 @@
-import { db } from "./db";
+import { db } from "../db";
 import { decrypt, encrypt } from "./encryption";
-import { ExpiringTokenBucket, RefillingTokenBucket } from "./rate-limit";
+import { ExpiringTokenBucket, RefillingTokenBucket } from "../rate-limit";
 
 export const totpBucket = new ExpiringTokenBucket<number>(5, 60 * 30);
 export const totpUpdateBucket = new RefillingTokenBucket<number>(3, 60 * 10);
 
 export function getUserTOTPKey(userId: number): Uint8Array | null {
 	const row = db.queryOne("SELECT totp_credential.key FROM totp_credential WHERE user_id = ?", [userId]);
-	if (row === null) {
+	if (!row) {
 		throw new Error("Invalid user ID");
 	}
 	const encrypted = row.bytesNullable(0);

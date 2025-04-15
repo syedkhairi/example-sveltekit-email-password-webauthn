@@ -1,13 +1,13 @@
-import { verifyEmailInput } from "$lib/server/email";
-import { getUserFromEmail } from "$lib/server/user";
+import { verifyEmailInput } from "$lib/server/auth/email";
+import { getUserFromEmail } from "$lib/server/auth/user";
 import {
 	createPasswordResetSession,
 	invalidateUserPasswordResetSessions,
 	sendPasswordResetEmail,
 	setPasswordResetSessionTokenCookie
-} from "$lib/server/password-reset";
+} from "$lib/server/auth/password-reset";
 import { RefillingTokenBucket } from "$lib/server/rate-limit";
-import { generateSessionToken } from "$lib/server/session";
+import { generateSessionToken } from "$lib/server/auth/session";
 import { fail, redirect } from "@sveltejs/kit";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
@@ -59,7 +59,7 @@ async function action(event: RequestEvent) {
 			email
 		});
 	}
-	const user = getUserFromEmail(email);
+	const user = await  getUserFromEmail(email);
 	if (user === null) {
 		return fail(400, {
 			form,
@@ -83,7 +83,7 @@ async function action(event: RequestEvent) {
 	}
 	invalidateUserPasswordResetSessions(user.id);
 	const sessionToken = generateSessionToken();
-	const session = createPasswordResetSession(sessionToken, user.id, user.email);
+	const session = await createPasswordResetSession(sessionToken, user.id, user.email);
 	sendPasswordResetEmail(session.email, session.code);
 	setPasswordResetSessionTokenCookie(event, sessionToken, session.expiresAt);
 	return redirect(302, "/reset-password/verify-email");

@@ -12,35 +12,34 @@ import {
     sendVerificationEmail,
     sendVerificationEmailBucket,
     setEmailVerificationRequestCookie
-} from "$lib/server/email-verification";
-// import { checkEmailAvailability, verifyEmailInput } from "$lib/server/email";
+} from "$lib/server/auth/email-verification";
 import { checkEmailAvailability } from "$lib/server/auth/email";
-import { verifyPasswordHash, verifyPasswordStrength } from "$lib/server/password";
-import { getUserPasswordHash, getUserRecoverCode, resetUserRecoveryCode, updateUserPassword } from "$lib/server/user";
+import { verifyPasswordHash, verifyPasswordStrength } from "$lib/server/auth/password";
+import { getUserPasswordHash, getUserRecoverCode, resetUserRecoveryCode, updateUserPassword } from "$lib/server/auth/user";
 import {
     createSession,
     generateSessionToken,
     invalidateUserSessions,
     setSessionTokenCookie
-} from "$lib/server/session";
+} from "$lib/server/auth/session";
 import {
     deleteUserPasskeyCredential,
     deleteUserSecurityKeyCredential,
     getUserPasskeyCredentials,
     getUserSecurityKeyCredentials
-} from "$lib/server/webauthn";
+} from "$lib/server/auth/webauthn";
 import { decodeBase64, encodeBase64 } from "@oslojs/encoding";
-import { get2FARedirect } from "$lib/server/2fa";
-import { deleteUserTOTPKey, totpUpdateBucket } from "$lib/server/totp";
+import { get2FARedirect } from "$lib/server/auth/2fa";
+import { deleteUserTOTPKey, totpUpdateBucket } from "$lib/server/auth/totp";
 import { ExpiringTokenBucket } from "$lib/server/rate-limit";
 
-import type { SessionFlags } from "$lib/server/session";
+import type { SessionFlags } from "$lib/server/auth/session";
 
 const passwordUpdateBucket = new ExpiringTokenBucket<string>(5, 60 * 30);
 
 export const load = (async ({ parent }) => {
-    console.log("load");
     const parentDataFromLayout = await parent();
+    console.log("Parent data from layout", parentDataFromLayout);
 
     if (parentDataFromLayout) {
         // You can access the user data from the parent layout
@@ -130,7 +129,7 @@ async function updatePasswordAction(event: RequestEvent) {
             message: "Too many requests"
         });
     }
-    const passwordHash = getUserPasswordHash(event.locals.user.id);
+    const passwordHash = await getUserPasswordHash(event.locals.user.id);
     const validPassword = await verifyPasswordHash(passwordHash, password);
     if (!validPassword) {
         return fail(400, {
@@ -139,14 +138,14 @@ async function updatePasswordAction(event: RequestEvent) {
         });
     }
     passwordUpdateBucket.reset(event.locals.session.id);
-    invalidateUserSessions(event.locals.user.id);
+    await invalidateUserSessions(event.locals.user.id);
     await updateUserPassword(event.locals.user.id, newPassword);
 
     const sessionToken = generateSessionToken();
     const sessionFlags: SessionFlags = {
         twoFactorVerified: event.locals.session.twoFactorVerified
     };
-    const session = createSession(sessionToken, event.locals.user.id, sessionFlags);
+    const session = await createSession(sessionToken, event.locals.user.id, sessionFlags);
     setSessionTokenCookie(event, sessionToken, session.expiresAt);
     return message(
         passwordForm,
@@ -155,6 +154,8 @@ async function updatePasswordAction(event: RequestEvent) {
 }
 
 async function updateEmailAction(event: RequestEvent) {
+    // simulate a delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     const emailForm = await superValidate(event.request, zod(emailFormSchema));
 
     if (!emailForm.valid) return fail(400, { emailForm });
@@ -180,7 +181,7 @@ async function updateEmailAction(event: RequestEvent) {
 
     const { data: formData } = emailForm;
     const email = formData.newEmailAddress;
-    const emailAvailable = checkEmailAvailability(email);
+    const emailAvailable = await checkEmailAvailability(email);
     if (!emailAvailable) {
         return fail(400, {
             emailForm,
@@ -193,7 +194,7 @@ async function updateEmailAction(event: RequestEvent) {
             message: "Too many requests"
         });
     }
-    const verificationRequest = createEmailVerificationRequest(event.locals.user.id, email);
+    const verificationRequest = await createEmailVerificationRequest(event.locals.user.id, email);
     sendVerificationEmail(verificationRequest.email, verificationRequest.code);
     setEmailVerificationRequestCookie(event, verificationRequest);
     return redirect(302, "/verify-email");
@@ -237,7 +238,7 @@ async function updateTotpAction(event: RequestEvent) {
     const totpCode = formData.registeredTotp;
 
     if (totpCode === false) {
-        deleteUserTOTPKey(event.locals.user.id);
+        await deleteUserTOTPKey(event.locals.user.id);
         return message(
             totpForm,
             "TOTP disconnected successfully"
@@ -294,7 +295,7 @@ async function updatePasskeyAction(event: RequestEvent) {
                 message: "Invalid credential ID"
             });
         }
-        const deleted = deleteUserPasskeyCredential(event.locals.user.id, credentialId);
+        const deleted = await deleteUserPasskeyCredential(event.locals.user.id, credentialId);
         if (!deleted) {
             return fail(400, {
                 passkeyForm,

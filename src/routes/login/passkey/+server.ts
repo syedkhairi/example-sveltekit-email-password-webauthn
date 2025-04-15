@@ -9,14 +9,14 @@ import {
 import { decodePKIXECDSASignature, decodeSEC1PublicKey, p256, verifyECDSASignature } from "@oslojs/crypto/ecdsa";
 import { ObjectParser } from "@pilcrowjs/object-parser";
 import { decodeBase64 } from "@oslojs/encoding";
-import { verifyWebAuthnChallenge, getPasskeyCredential } from "$lib/server/webauthn";
-import { createSession, generateSessionToken, setSessionTokenCookie } from "$lib/server/session";
+import { verifyWebAuthnChallenge, getPasskeyCredential } from "$lib/server/auth/webauthn";
+import { createSession, generateSessionToken, setSessionTokenCookie } from "$lib/server/auth/session";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { decodePKCS1RSAPublicKey, sha256ObjectIdentifier, verifyRSASSAPKCS1v15Signature } from "@oslojs/crypto/rsa";
 
 import type { RequestEvent } from "./$types";
 import type { ClientData, AuthenticatorData } from "@oslojs/webauthn";
-import type { SessionFlags } from "$lib/server/session";
+import type { SessionFlags } from "$lib/server/auth/session";
 
 // Stricter rate limiting can be omitted here since creating challenges are rate-limited
 export async function POST(context: RequestEvent): Promise<Response> {
@@ -102,7 +102,7 @@ export async function POST(context: RequestEvent): Promise<Response> {
 		});
 	}
 
-	const credential = getPasskeyCredential(credentialId);
+	const credential = await getPasskeyCredential(credentialId);
 	if (credential === null) {
 		return new Response("Invalid credential", {
 			status: 400
@@ -134,7 +134,7 @@ export async function POST(context: RequestEvent): Promise<Response> {
 		twoFactorVerified: true
 	};
 	const sessionToken = generateSessionToken();
-	const session = createSession(sessionToken, credential.userId, sessionFlags);
+	const session = await createSession(sessionToken, credential.userId, sessionFlags);
 	setSessionTokenCookie(context, sessionToken, session.expiresAt);
 	return new Response(null, {
 		status: 204

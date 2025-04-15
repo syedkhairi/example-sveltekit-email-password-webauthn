@@ -1,7 +1,7 @@
-import { db } from "./db";
+import { db } from "../db";
 import { decryptToString, encryptString } from "./encryption";
 import { hashPassword } from "./password";
-import { generateRandomRecoveryCode } from "./utils";
+import { generateRandomRecoveryCode } from "../utils";
 
 export function verifyUsernameInput(username: string): boolean {
 	return username.length > 3 && username.length < 32 && username.trim() === username;
@@ -15,7 +15,7 @@ export async function createUser(email: string, username: string, password: stri
 		"INSERT INTO user (email, username, password_hash, recovery_code) VALUES (?, ?, ?, ?) RETURNING user.id",
 		[email, username, passwordHash, encryptedRecoveryCode]
 	);
-	if (row === null) {
+	if (!row) {
 		throw new Error("Unexpected error");
 	}
 	const user: User = {
@@ -47,7 +47,7 @@ export function setUserAsEmailVerifiedIfEmailMatches(userId: number, email: stri
 
 export function getUserPasswordHash(userId: number): string {
 	const row = db.queryOne("SELECT password_hash FROM user WHERE id = ?", [userId]);
-	if (row === null) {
+	if (!row) {
 		throw new Error("Invalid user ID");
 	}
 	return row.string(0);
@@ -55,7 +55,7 @@ export function getUserPasswordHash(userId: number): string {
 
 export function getUserRecoverCode(userId: number): string {
 	const row = db.queryOne("SELECT recovery_code FROM user WHERE id = ?", [userId]);
-	if (row === null) {
+	if (!row) {
 		throw new Error("Invalid user ID");
 	}
 	return decryptToString(row.bytes(0));
@@ -77,7 +77,7 @@ export function getUserFromEmail(email: string): User | null {
         WHERE user.email = ?`,
 		[email]
 	);
-	if (row === null) {
+	if (!row) {
 		return null;
 	}
 	const user: User = {

@@ -1,7 +1,7 @@
-import { totpBucket, getUserTOTPKey } from "$lib/server/totp";
+import { totpBucket, getUserTOTPKey } from "$lib/server/auth/totp";
 import { fail, redirect } from "@sveltejs/kit";
 import { verifyTOTP } from "@oslojs/otp";
-import { setSessionAs2FAVerified } from "$lib/server/session";
+import { setSessionAs2FAVerified } from "$lib/server/auth/session";
 
 import type { Actions, RequestEvent } from "./$types";
 
@@ -61,7 +61,7 @@ async function action(event: RequestEvent) {
 			message: "Too many requests"
 		});
 	}
-	const totpKey = getUserTOTPKey(event.locals.user.id);
+	const totpKey = await getUserTOTPKey(event.locals.user.id);
 	if (totpKey === null) {
 		return fail(403, {
 			message: "Forbidden"
@@ -73,6 +73,6 @@ async function action(event: RequestEvent) {
 		});
 	}
 	totpBucket.reset(event.locals.user.id);
-	setSessionAs2FAVerified(event.locals.session.id);
+	await setSessionAs2FAVerified(event.locals.session.id);
 	return redirect(302, "/");
 }

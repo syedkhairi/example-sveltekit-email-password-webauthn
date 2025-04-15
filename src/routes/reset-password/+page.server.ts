@@ -2,26 +2,26 @@ import {
 	deletePasswordResetSessionTokenCookie,
 	invalidateUserPasswordResetSessions,
 	validatePasswordResetSessionRequest
-} from "$lib/server/password-reset";
+} from "$lib/server/auth/password-reset";
 import { fail, redirect } from "@sveltejs/kit";
-import { verifyPasswordStrength } from "$lib/server/password";
+import { verifyPasswordStrength } from "$lib/server/auth/password";
 import {
 	createSession,
 	generateSessionToken,
 	invalidateUserSessions,
 	setSessionTokenCookie
-} from "$lib/server/session";
-import { updateUserPassword } from "$lib/server/user";
-import { getPasswordReset2FARedirect } from "$lib/server/2fa";
+} from "$lib/server/auth/session";
+import { updateUserPassword } from "$lib/server/auth/user";
+import { getPasswordReset2FARedirect } from "$lib/server/auth/2fa";
 
 import type { Actions, RequestEvent } from "./$types";
-import type { SessionFlags } from "$lib/server/session";
+import type { SessionFlags } from "$lib/server/auth/session";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { formSchema } from "./reset-password-form.svelte";
 
 export const load = (async (event: RequestEvent) => {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
 	if (session === null) {
 		return redirect(302, "/forgot-password");
 	}
@@ -45,7 +45,7 @@ async function action(event: RequestEvent) {
 
 	if (!form.valid) return fail(400, { form });
 
-	const { session: passwordResetSession, user } = validatePasswordResetSessionRequest(event);
+	const { session: passwordResetSession, user } = await validatePasswordResetSessionRequest(event);
 	if (passwordResetSession === null) {
 		return fail(401, {
 			form,
@@ -88,7 +88,7 @@ async function action(event: RequestEvent) {
 		twoFactorVerified: passwordResetSession.twoFactorVerified
 	};
 	const sessionToken = generateSessionToken();
-	const session = createSession(sessionToken, user.id, sessionFlags);
+	const session = await createSession(sessionToken, user.id, sessionFlags);
 	setSessionTokenCookie(event, sessionToken, session.expiresAt);
 	deletePasswordResetSessionTokenCookie(event);
 	return redirect(302, "/");

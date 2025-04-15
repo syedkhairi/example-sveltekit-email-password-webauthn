@@ -6,7 +6,7 @@ import { generateRandomOTP } from "$lib/server/utils";
 import { sha256 } from "@oslojs/crypto/sha2";
 
 import type { RequestEvent } from "@sveltejs/kit";
-import type { User } from "$lib/server/user";
+import type { User } from "$lib/server/auth/user";
 
 export async function createPasswordResetSession(token: string, userId: number, email: string): Promise<PasswordResetSession> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
@@ -60,7 +60,7 @@ export async function validatePasswordResetSessionToken(token: string): Promise<
 		.leftJoin(table.passkeyCredential, eq(table.user.id, table.passkeyCredential.user_id))
 		.leftJoin(table.securityKeyCredential, eq(table.user.id, table.securityKeyCredential.user_id))
 		.where(eq(table.passwordResetSession.id, sessionId));
-	if (row === null) {
+	if (!row) {
 		return { session: null, user: null };
 	}
 	const session: PasswordResetSession = {

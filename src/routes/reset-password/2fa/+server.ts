@@ -1,10 +1,10 @@
-import { getPasswordReset2FARedirect } from "$lib/server/2fa";
-import { validatePasswordResetSessionRequest } from "$lib/server/password-reset";
+import { getPasswordReset2FARedirect } from "$lib/server/auth/2fa";
+import { validatePasswordResetSessionRequest } from "$lib/server/auth/password-reset";
 
 import type { RequestEvent } from "./$types";
 
 export async function GET(event: RequestEvent) {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
 	if (session === null) {
 		return new Response(null, {
 			status: 302,

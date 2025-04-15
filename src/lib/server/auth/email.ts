@@ -14,8 +14,5 @@ export async function checkEmailAvailability(email: string): Promise<boolean> {
         )
     // const row = await db.execute(sql`SELECT COUNT(*) FROM user WHERE email = ${email}`);
     console.log(row);
-	if (row === null) {
-		throw new Error("Email availability check failed.");
-	}
     return row === 0;
 }

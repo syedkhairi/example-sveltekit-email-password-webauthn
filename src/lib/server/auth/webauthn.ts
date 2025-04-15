@@ -33,11 +33,11 @@ export async function getUserPasskeyCredentials(userId: number): Promise<WebAuth
 	const credentials: WebAuthnUserCredential[] = [];
 	for (const row of rows) {
 		const credential: WebAuthnUserCredential = {
-			id: row.id,
+			id: new Uint8Array(row.id),
 			userId: row.user_id,
 			name: row.name,
 			algorithmId: row.algorithm,
-			publicKey: row.public_key
+			publicKey: new Uint8Array(row.public_key)
 		};
 		credentials.push(credential);
 	}
@@ -56,15 +56,15 @@ export async function getPasskeyCredential(credentialId: Uint8Array): Promise<We
 		.from(table.passkeyCredential)
 		.where(eq(table.passkeyCredential.id, credentialId))
 		.limit(1);
-	if (row === null) {
+	if (!row) {
 		return null;
 	}
 	const credential: WebAuthnUserCredential = {
-		id: row.id,
+		id: new Uint8Array(row.id),
 		userId: row.user_id,
 		name: row.name,
 		algorithmId: row.algorithm,
-		publicKey: row.public_key
+		publicKey: new Uint8Array(row.public_key)
 	};
 	return credential;
 }
@@ -86,15 +86,15 @@ export async function getUserPasskeyCredential(userId: number, credentialId: Uin
 			)
 		)
 		.limit(1);
-	if (row === null) {
+	if (!row) {
 		return null;
 	}
 	const credential: WebAuthnUserCredential = {
-		id: row.id,
+		id: new Uint8Array(row.id),
 		userId: row.user_id,
 		name: row.name,
 		algorithmId: row.algorithm,
-		publicKey: row.public_key
+		publicKey: new Uint8Array(row.public_key)
 	};
 	return credential;
 }
@@ -165,15 +165,15 @@ export async function getUserSecurityKeyCredential(userId: number, credentialId:
 			)
 		)
 		.limit(1);
-	if (row === null) {
+	if (!row) {
 		return null;
 	}
 	const credential: WebAuthnUserCredential = {
-		id: row.id,
+		id: new Uint8Array(row.id),
 		userId: row.user_id,
 		name: row.name,
 		algorithmId: row.algorithm,
-		publicKey: row.public_key
+		publicKey: new Uint8Array(row.public_key)
 	};
 	return credential;
 }

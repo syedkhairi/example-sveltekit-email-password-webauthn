@@ -9,16 +9,16 @@ import {
 import { decodePKIXECDSASignature, decodeSEC1PublicKey, p256, verifyECDSASignature } from "@oslojs/crypto/ecdsa";
 import { ObjectParser } from "@pilcrowjs/object-parser";
 import { decodeBase64 } from "@oslojs/encoding";
-import { verifyWebAuthnChallenge, getUserSecurityKeyCredential } from "$lib/server/webauthn";
+import { verifyWebAuthnChallenge, getUserSecurityKeyCredential } from "$lib/server/auth/webauthn";
 import { decodePKCS1RSAPublicKey, sha256ObjectIdentifier, verifyRSASSAPKCS1v15Signature } from "@oslojs/crypto/rsa";
 import { sha256 } from "@oslojs/crypto/sha2";
-import { setPasswordResetSessionAs2FAVerified, validatePasswordResetSessionRequest } from "$lib/server/password-reset";
+import { setPasswordResetSessionAs2FAVerified, validatePasswordResetSessionRequest } from "$lib/server/auth/password-reset";
 
 import type { AuthenticatorData, ClientData } from "@oslojs/webauthn";
 import type { RequestEvent } from "./$types";
 
 export async function POST(event: RequestEvent) {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
 	if (session === null || user === null) {
 		return new Response("Not authenticated", {
 			status: 401
@@ -112,7 +112,7 @@ export async function POST(event: RequestEvent) {
 		});
 	}
 
-	const credential = getUserSecurityKeyCredential(user.id, credentialId);
+	const credential = await getUserSecurityKeyCredential(user.id, credentialId);
 	if (credential === null) {
 		return new Response("Invalid credential", {
 			status: 400
@@ -141,7 +141,7 @@ export async function POST(event: RequestEvent) {
 		});
 	}
 
-	setPasswordResetSessionAs2FAVerified(session.id);
+	await setPasswordResetSessionAs2FAVerified(session.id);
 	return new Response(null, {
 		status: 204
 	});

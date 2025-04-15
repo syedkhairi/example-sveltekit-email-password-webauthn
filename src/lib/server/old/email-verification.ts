@@ -1,6 +1,6 @@
-import { generateRandomOTP } from "./utils";
-import { db } from "./db";
-import { ExpiringTokenBucket } from "./rate-limit";
+import { generateRandomOTP } from "../utils";
+import { db } from "../db";
+import { ExpiringTokenBucket } from "../rate-limit";
 import { encodeBase32LowerCaseNoPadding } from "@oslojs/encoding";
 
 import type { RequestEvent } from "@sveltejs/kit";
@@ -10,7 +10,7 @@ export function getUserEmailVerificationRequest(userId: number, id: string): Ema
 		"SELECT id, user_id, code, email, expires_at FROM email_verification_request WHERE id = ? AND user_id = ?",
 		[id, userId]
 	);
-	if (row === null) {
+	if (!row) {
 		return row;
 	}
 	const request: EmailVerificationRequest = {
