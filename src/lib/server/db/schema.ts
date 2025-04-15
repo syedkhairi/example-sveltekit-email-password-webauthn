@@ -1,12 +1,21 @@
-import { pgTable, text, integer, timestamp, pgPolicy, uuid, boolean, pgEnum, index, primaryKey, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, customType, serial, timestamp, pgPolicy, uuid, boolean, pgEnum, index, primaryKey, uniqueIndex } from 'drizzle-orm/pg-core';
+
+const bytea = customType<{
+  data: Uint8Array;
+  driverData: Buffer;
+}>({
+  dataType() {
+    return 'bytea';
+  },
+});
 
 export const user = pgTable('user', {
-  id: integer('id').primaryKey().notNull(),
+  id: serial('id').primaryKey().notNull(),
   email: text('email').notNull().unique(),
   username: text('username').notNull(),
   password_hash: text('password_hash').notNull(),
   email_verified: integer('email_verified').notNull().default(0),
-  recovery_code: text('recovery_code').notNull(), // Changed BLOB to text for PostgreSQL
+  recovery_code: bytea('recovery_code').notNull(),
 }, (table) => [
     index('email_index').on(table.email)
 ]);
@@ -37,23 +46,23 @@ export const passwordResetSession = pgTable('password_reset_session', {
 });
 
 export const totpCredential = pgTable('totp_credential', {
-  id: integer('id').primaryKey().notNull(),
+  id: serial('id').primaryKey().notNull(),
   user_id: integer('user_id').notNull().references(() => user.id).unique(),
-  key: text('key').notNull(), // Changed BLOB to text for PostgreSQL
+  key: bytea('key').notNull(),
 });
 
 export const passkeyCredential = pgTable('passkey_credential', {
-  id: text('id').primaryKey().notNull(), // Changed BLOB to text for PostgreSQL
+  id: bytea('id').primaryKey().notNull(),
   user_id: integer('user_id').notNull().references(() => user.id),
   name: text('name').notNull(),
   algorithm: integer('algorithm').notNull(),
-  public_key: text('public_key').notNull(), // Changed BLOB to text for PostgreSQL
+  public_key: bytea('public_key').notNull(),
 });
 
 export const securityKeyCredential = pgTable('security_key_credential', {
-  id: text('id').primaryKey().notNull(), // Changed BLOB to text for PostgreSQL
+  id: bytea('id').primaryKey().notNull(),
   user_id: integer('user_id').notNull().references(() => user.id),
   name: text('name').notNull(),
   algorithm: integer('algorithm').notNull(),
-  public_key: text('public_key').notNull(), // Changed BLOB to text for PostgreSQL
+  public_key: bytea('public_key').notNull(),
 });
