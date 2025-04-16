@@ -20,7 +20,9 @@
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import { superForm, type Infer, type SuperValidated } from "sveltekit-superforms";
 	import { toast } from "svelte-sonner";
-
+	import { cn } from "$lib/utils";
+	import Loader from "@lucide/svelte/icons/loader";
+ 
 	let { data }: { data: SuperValidated<Infer<LoginFormSchema>> } = $props();
 
 	const form = superForm(data, {
@@ -93,6 +95,9 @@
 					disabled={($formData.email === "" || $formData.password === "") || $submitting}
 					>
 					Sign in
+					<Loader class={cn("ml-0.5 size-3 animate-spin" , {
+						"hidden": !$submitting,
+					})}/>
 				</Form.Button>
 
 				<Button 

@@ -39,7 +39,6 @@ const passwordUpdateBucket = new ExpiringTokenBucket<string>(5, 60 * 30);
 
 export const load = (async ({ parent }) => {
     const parentDataFromLayout = await parent();
-    console.log("Parent data from layout", parentDataFromLayout);
 
     if (parentDataFromLayout) {
         // You can access the user data from the parent layout

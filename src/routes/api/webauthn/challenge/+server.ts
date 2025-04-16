@@ -7,13 +7,18 @@ import type { RequestEvent } from "./$types";
 const webauthnChallengeRateLimitBucket = new RefillingTokenBucket<string>(30, 10);
 
 export async function POST(event: RequestEvent) {
-	// TODO: Assumes X-Forwarded-For is always included.
-	const clientIP = event.request.headers.get("X-Forwarded-For");
-	if (clientIP !== null && !webauthnChallengeRateLimitBucket.consume(clientIP, 1)) {
-		return new Response("Too many requests", {
-			status: 429
-		});
-	}
+	// Get client IP from various possible headers or connection info
+    const clientIP = 
+        event.request.headers.get("X-Forwarded-For")?.split(',')[0] || // First IP in X-Forwarded-For
+        event.request.headers.get("CF-Connecting-IP") || // Cloudflare
+        event.request.headers.get("True-Client-IP") || // Akamai and others
+        event.getClientAddress() || // SvelteKit's built-in method
+        "unknown-ip"; // Fallback value
+    if (!webauthnChallengeRateLimitBucket.consume(clientIP, 1)) {
+        return new Response("Too many requests", {
+            status: 429
+        });
+    }
 	const challenge = createWebAuthnChallenge();
 	return new Response(JSON.stringify({ challenge: encodeBase64(challenge) }));
 }

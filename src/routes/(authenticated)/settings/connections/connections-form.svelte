@@ -34,6 +34,8 @@
 	const form = superForm(data, {
         dataType: 'json',
 		resetForm: false,
+        applyAction: true,
+        invalidateAll: false,
 		validators: zodClient(connectionsFormSchema),
         onSubmit: async ({ cancel }) => {
             for (let i = 0; i < $formData.accounts.length; i++) {
@@ -72,10 +74,12 @@
         },
 	});
 
-	const { form: formData, enhance, submitting, isTainted } = form;
+	const { form: formData, enhance, submit, submitting, isTainted } = form;
 
     function removeAccountByIndex(index: number) {
+        // TODO: add confirmation dialog
 		$formData.accounts = $formData.accounts.filter((_, i) => i !== index);
+        submit();
 	}
  
 	function addAccount() {

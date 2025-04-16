@@ -54,7 +54,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Current email address</Form.Label>
-				<Input readonly {...props} bind:value={$formData.currentEmailAddress} type="email" />
+				<Input readonly disabled {...props} bind:value={$formData.currentEmailAddress} type="email" />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />

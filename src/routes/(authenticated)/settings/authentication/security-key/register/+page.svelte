@@ -19,6 +19,8 @@
 	import * as Form from "$lib/components/ui/form/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { toast } from "svelte-sonner";
+	import { cn } from "$lib/utils";
+	import Loader from "@lucide/svelte/icons/loader";
 
 	import type { PageData } from "./$types";
 	import { browser, dev } from "$app/environment";
@@ -41,7 +43,7 @@
 			}
 		},
 	});
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, submitting } = form;
 </script>
 
 <div class="space-y-6">
@@ -126,9 +128,12 @@
 			<input type="hidden" name="encodedAttestationObject" value={$formData.encodedAttestationObject} />
 			<input type="hidden" name="encodedClientDataJSON" value={$formData.encodedClientDataJSON} />
 			<Form.Button
-				disabled={$formData.encodedAttestationObject === null && $formData.encodedClientDataJSON === null}
+				disabled={($formData.encodedAttestationObject === null && $formData.encodedClientDataJSON === null) || $submitting}
 			>
 				Save
+				<Loader class={cn("ml-0.5 size-3 animate-spin" , {
+					"hidden": !$submitting,
+				})}/>
 			</Form.Button>
 		</form>
 	{/if}

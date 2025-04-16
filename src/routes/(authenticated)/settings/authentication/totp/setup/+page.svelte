@@ -20,6 +20,8 @@
 	import { browser, dev } from "$app/environment";
 	import * as InputOTP from "$lib/components/ui/input-otp/index.js";
 	import * as Form from "$lib/components/ui/form/index.js";
+	import { cn } from "$lib/utils";
+	import Loader from "@lucide/svelte/icons/loader";
 
 	let { data }: { data: { form: SuperValidated<Infer<FormSchema>>, qrcode: string } } = $props(); 
 	
@@ -37,7 +39,7 @@
 		},
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, submitting } = form;
 </script>
 
 <div class="space-y-6">
@@ -73,7 +75,14 @@
 			</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
-		<Form.Button>Submit</Form.Button>
+		<Form.Button
+			disabled={($formData.pin.length < 6) || $submitting}    
+		>
+			Submit
+			<Loader class={cn("ml-0.5 size-3 animate-spin" , {
+				"hidden": !$submitting,
+			})}/>
+		</Form.Button>
 	</form>
 
 	{#if browser}

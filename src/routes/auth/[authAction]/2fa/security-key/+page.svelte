@@ -7,19 +7,15 @@
 
 	import type { PageData } from "./$types";
 
-	interface Props {
-		data: PageData;
-	}
-
-	let { data }: Props = $props();
+	let { data } : { data: PageData } = $props();
 
 	let message = $state("");
 </script>
 
 <Card.Root class="mx-auto max-w-sm">
 	<Card.Header>
-		<Card.Title class="text-2xl">Authenticate with passkeys</Card.Title>
-		<Card.Description>As a two-factor security measure, please authenticate with your passkeys you have used previously.</Card.Description>
+		<Card.Title class="text-2xl">Authenticate with security keys</Card.Title>
+		<Card.Description>As a two-factor security measure, please authenticate with your security keys you have used previously.</Card.Description>
 	</Card.Header>
 	<Card.Content>
 		<div class="grid gap-4">
@@ -49,7 +45,7 @@
 						throw new Error("Unexpected error");
 					}
 		
-					const response = await fetch("/settings/authentication/passkey", {
+					const response = await fetch("/reset-password/settings/authentication/security-key", {
 						method: "POST",
 						body: JSON.stringify({
 							credential_id: encodeBase64(new Uint8Array(credential.rawId)),
@@ -60,13 +56,13 @@
 					});
 		
 					if (response.ok) {
-						goto("/");
+						goto("/reset-password");
 					} else {
 						message = await response.text();
 					}
 				}}
 			>
-				Authenticate with passkey
+				Authenticate with security key
 			</Button>
 
 			<div class="relative">
@@ -87,13 +83,13 @@
 					Use a recovery code
 				</Button>
 
-				{#if data.user.registeredSecurityKey}
+				{#if data.user.registeredPasskey}
 					<Button 
 						variant="outline"
 						class="w-full"
-						href="/settings/authentication/security-key"
+						href="/reset-password/2fa/passkey"
 					>
-						Use a security key
+						Use a passkey
 					</Button>
 				{/if}
 
@@ -101,7 +97,7 @@
 					<Button 
 						variant="outline"
 						class="w-full"
-						href="/settings/authentication/totp"
+						href="/reset-password/2fa/totp"
 					>
 						Use an authenticator app
 					</Button>

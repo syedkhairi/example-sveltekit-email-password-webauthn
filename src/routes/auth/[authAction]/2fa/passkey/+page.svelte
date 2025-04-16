@@ -7,11 +7,7 @@
 
 	import type { PageData } from "./$types";
 
-	interface Props {
-		data: PageData;
-	}
-
-	let { data }: Props = $props();
+	let { data } : { data: PageData } = $props();
 
 	let message = $state("");
 </script>
@@ -49,7 +45,7 @@
 						throw new Error("Unexpected error");
 					}
 		
-					const response = await fetch("/settings/authentication/passkey", {
+					const response = await fetch("/reset-password/settings/authentication/passkey", {
 						method: "POST",
 						body: JSON.stringify({
 							credential_id: encodeBase64(new Uint8Array(credential.rawId)),
@@ -60,7 +56,7 @@
 					});
 		
 					if (response.ok) {
-						goto("/");
+						goto("/reset-password");
 					} else {
 						message = await response.text();
 					}
@@ -91,7 +87,7 @@
 					<Button 
 						variant="outline"
 						class="w-full"
-						href="/settings/authentication/security-key"
+						href="/reset-password/2fa/security-key"
 					>
 						Use a security key
 					</Button>
@@ -101,7 +97,7 @@
 					<Button 
 						variant="outline"
 						class="w-full"
-						href="/settings/authentication/totp"
+						href="/reset-password/2fa/totp"
 					>
 						Use an authenticator app
 					</Button>
