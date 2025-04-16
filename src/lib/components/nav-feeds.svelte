@@ -49,20 +49,20 @@
 						{/snippet}
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content
-						class="w-48"
+						class="w-44"
 						side={sidebar.isMobile ? "bottom" : "right"}
 						align={sidebar.isMobile ? "end" : "start"}
 					>
-						<DropdownMenu.Item>
+						<DropdownMenu.Item class="space-x-1">
 							<Pencil class="text-muted-foreground" />
 							<span>Edit feed</span>
 						</DropdownMenu.Item>
-						<DropdownMenu.Item>
+						<DropdownMenu.Item class="space-x-1">
 							<SquareArrowOutUpRight class="text-muted-foreground" />
 							<span>View on Bluesky</span>
 						</DropdownMenu.Item>
 						<DropdownMenu.Separator />
-						<DropdownMenu.Item>
+						<DropdownMenu.Item class="space-x-1">
 							<Trash2 class="text-muted-foreground" />
 							<span>Delete feed</span>
 						</DropdownMenu.Item>

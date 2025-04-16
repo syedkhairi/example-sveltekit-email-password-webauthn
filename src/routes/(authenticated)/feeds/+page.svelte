@@ -34,7 +34,11 @@
                         </Button>
                     {/snippet}
                 </DropdownMenu.Trigger>
-                <DropdownMenu.Content side="bottom" align="start">
+                <DropdownMenu.Content 
+                    side="bottom" 
+                    align="start"
+                    class="w-44"
+                >
                     <DropdownMenu.Group>
                         <DropdownMenu.Item class="space-x-1">
                             <RefreshCcw class="text-muted-foreground" />
