@@ -28,7 +28,9 @@ export const session = pgTable('session', {
   user_id: integer('user_id').notNull().references(() => user.id),
   expires_at: integer('expires_at').notNull(),
   two_factor_verified: integer('two_factor_verified').notNull().default(0),
-});
+}, (table) => ({
+    userIdx: index('session_user_id_idx').on(table.user_id),
+}));
 
 export const emailVerificationRequest = pgTable('email_verification_request', {
   id: text('id').primaryKey().notNull(),
@@ -37,7 +39,9 @@ export const emailVerificationRequest = pgTable('email_verification_request', {
   email: text('email').notNull(),
   code: text('code').notNull(),
   expires_at: integer('expires_at').notNull(),
-});
+}, (table) => ({
+    userIdx: index('email_verification_request_user_id_idx').on(table.user_id),
+}));
 
 export const passwordResetSession = pgTable('password_reset_session', {
   id: text('id').primaryKey().notNull(),
@@ -48,14 +52,18 @@ export const passwordResetSession = pgTable('password_reset_session', {
   expires_at: integer('expires_at').notNull(),
   email_verified: integer('email_verified').notNull().default(0),
   two_factor_verified: integer('two_factor_verified').notNull().default(0),
-});
+}, (table) => ({
+    userIdx: index('password_reset_session_user_id_idx').on(table.user_id),
+}));
 
 export const totpCredential = pgTable('totp_credential', {
   id: serial('id').primaryKey().notNull(),
   created_at: timestamp('created_at').notNull().defaultNow(),
   user_id: integer('user_id').notNull().references(() => user.id).unique(),
   key: bytea('key').notNull(),
-});
+}, (table) => ({
+    userIdx: index('totp_credential_user_id_idx').on(table.user_id), // Index might be redundant due to unique constraint, but explicit doesn't hurt
+}));
 
 export const passkeyCredential = pgTable('passkey_credential', {
   id: bytea('id').primaryKey().notNull(),
@@ -64,7 +72,9 @@ export const passkeyCredential = pgTable('passkey_credential', {
   name: text('name').notNull(),
   algorithm: integer('algorithm').notNull(),
   public_key: bytea('public_key').notNull(),
-});
+}, (table) => ({
+    userIdx: index('passkey_credential_user_id_idx').on(table.user_id),
+}));
 
 export const securityKeyCredential = pgTable('security_key_credential', {
   id: bytea('id').primaryKey().notNull(),
@@ -73,4 +83,6 @@ export const securityKeyCredential = pgTable('security_key_credential', {
   name: text('name').notNull(),
   algorithm: integer('algorithm').notNull(),
   public_key: bytea('public_key').notNull(),
-});
+}, (table) => ({
+  userIdx: index('security_key_credential_user_id_idx').on(table.user_id),
+}));
