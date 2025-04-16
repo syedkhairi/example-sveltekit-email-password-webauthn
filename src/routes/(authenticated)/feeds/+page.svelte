@@ -4,6 +4,10 @@
     import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
     import { Button } from "$lib/components/ui/button/index.js";
     import EllipsisVertical from "@lucide/svelte/icons/ellipsis-vertical";
+    import RefreshCcw from "@lucide/svelte/icons/refresh-ccw";
+    import Pencil from "@lucide/svelte/icons/pencil";
+    import Share from "@lucide/svelte/icons/share";
+    import ExternalLink from "@lucide/svelte/icons/external-link";
     
     let { data }: { data: PageData } = $props();
 </script>
@@ -32,11 +36,23 @@
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content side="bottom" align="start">
                     <DropdownMenu.Group>
-                        <DropdownMenu.Item>Refresh</DropdownMenu.Item>
+                        <DropdownMenu.Item class="space-x-1">
+                            <RefreshCcw class="text-muted-foreground" />
+                            <span>Refresh feed</span>
+                        </DropdownMenu.Item>
                         <DropdownMenu.Separator />
-                        <DropdownMenu.Item>Edit feed</DropdownMenu.Item>
-                        <DropdownMenu.Item>Share feed</DropdownMenu.Item>
-                        <DropdownMenu.Item>View in Bluesky</DropdownMenu.Item>
+                        <DropdownMenu.Item class="space-x-1">
+                            <Pencil class="text-muted-foreground" />
+							<span>Edit feed</span>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item class="space-x-1">
+                            <Share class="text-muted-foreground" />
+							<span>Share feed</span>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item class="space-x-1">
+                            <ExternalLink class="text-muted-foreground" />
+							<span>View in Bluesky</span>
+                        </DropdownMenu.Item>
                     </DropdownMenu.Group>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
@@ -60,11 +76,11 @@
     </div>
 {/snippet}
 
-<div class="block h-[97%] w-dvw space-y-4">
+<div class="block h-[97%] space-y-4">
     <h1 class="uppercase tracking-wide text-xs text-muted-foreground">My feeds</h1>
     <div class="h-full">
         <ScrollArea class="size-full" orientation="horizontal">
-            <div class="flex flex-row gap-4 flex-1">
+            <div class="flex flex-row gap-4 flex-1 h-full">
                 {@render card()}
                 {@render card()}
                 {@render card()}

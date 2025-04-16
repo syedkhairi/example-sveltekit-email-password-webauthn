@@ -20,7 +20,7 @@
 
 <Sidebar.Provider>
 	<AppSidebar />
-	<Sidebar.Inset>
+	<Sidebar.Inset class="overflow-hidden">
 		<header class="flex h-16 shrink-0 items-center gap-2">
 			<div class="flex items-center gap-2 px-4">
 				<Sidebar.Trigger class="-ml-1" />
@@ -45,11 +45,11 @@
 				</Breadcrumb.Root>
 			</div>
 		</header>
-		<div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-			<div class="min-h-[100vh] flex-1 rounded-xl md:min-h-min">
+        <div class="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-x-hidden">
+            <div class="min-h-[100vh] flex-1 rounded-xl md:min-h-min">
                 {@render children()}
             </div>
-		</div>
+        </div>
 	</Sidebar.Inset>
 </Sidebar.Provider>
 
