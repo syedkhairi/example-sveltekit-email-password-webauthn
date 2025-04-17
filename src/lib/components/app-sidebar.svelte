@@ -9,6 +9,7 @@
 	import Settings2 from "@lucide/svelte/icons/settings-2";
 	import SquareTerminal from "@lucide/svelte/icons/square-terminal";
 	import BadgeCheck from "@lucide/svelte/icons/badge-check";
+	import Plus from "@lucide/svelte/icons/plus";
 
 	const data = {
 		user: {
@@ -103,7 +104,7 @@
 	<Sidebar.Header>
 		<Sidebar.Menu>
 			<Sidebar.MenuItem>
-				<Sidebar.MenuButton size="lg">
+				<Sidebar.MenuButton size="lg" class="gap-3">
 					{#snippet child({ props })}
 						<a href="##" {...props}>
 							<div
@@ -121,7 +122,21 @@
 			</Sidebar.MenuItem>
 		</Sidebar.Menu>
 	</Sidebar.Header>
-	<Sidebar.Content>
+	<Sidebar.Content class="gap-0">
+		<Sidebar.Group>
+			<Sidebar.Menu>
+				<Sidebar.MenuItem>
+					<Sidebar.MenuButton size="default" variant="outline" class="">
+						{#snippet child({ props })}
+							<a href="/feeds/new" {...props}>
+								<Plus class="text-muted-foreground" />
+								New feed
+							</a>
+						{/snippet}
+					</Sidebar.MenuButton>
+				</Sidebar.MenuItem>
+			</Sidebar.Menu>
+		</Sidebar.Group>
 		<NavMain items={data.navMain} />
 		<NavFeeds feeds={data.feeds} />
 		<NavSecondary items={data.navSecondary} class="mt-auto" />

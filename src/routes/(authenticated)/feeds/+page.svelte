@@ -15,9 +15,9 @@
 </script>
 
 {#snippet card()}
-    <div class="rounded-md border bg-muted pt-3.5 space-y-5 w-[400px] h-[calc(100vh-130px)] flex flex-col">
+    <div class="rounded-lg border bg-muted pt-3.5 space-y-5 w-[400px] h-[calc(100vh-130px)] flex flex-col">
         <div class="flex flex-row items-center justify-between gap-4 px-4">
-            <div class="aspect-square size-10 rounded-md bg-blue-600 flex items-center justify-center">
+            <div class="aspect-square size-10 rounded-lg bg-blue-600 flex items-center justify-center">
                 IC
             </div>
             <div class="flex flex-col">
@@ -75,6 +75,24 @@
                         likes={post.likes}
                         />
                     <Separator />
+                {:else}
+                    <div class="flex flex-col items-center justify-center h-full gap-3">
+                        <span class="text-xs text-muted-foreground">No posts found for this feed</span>
+                        <div class="space-x-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                >
+                                Edit feed
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                >
+                                View on Bsky
+                            </Button>
+                        </div>
+                    </div>
                 {/each}
             </div>
         </ScrollArea>
@@ -84,7 +102,7 @@
 <div class="flex flex-col h-full w-full overflow-hidden space-y-4">
     <h1 class="uppercase tracking-wide text-xs text-muted-foreground pl-4">My feeds</h1>
     <ScrollArea class="flex-1" orientation="horizontal">
-        <div class="flex flex-row gap-4 ml-4">
+        <div class="flex flex-row gap-4 mx-4">
             {@render card()}
             {@render card()}
             {@render card()}

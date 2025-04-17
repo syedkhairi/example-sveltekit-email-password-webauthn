@@ -26,7 +26,7 @@
 	];
 </script>
 
-<div class="block space-y-6 p-9 pb-16">
+<div class="block space-y-6 px-9 py-5 pb-16">
 	<div class="space-y-0.5">
 		<h2 class="text-2xl font-bold tracking-tight">Settings</h2>
 		<p class="text-muted-foreground">

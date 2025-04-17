@@ -35,7 +35,7 @@
 					<Sidebar.MenuButton
 						{...props}
 						size="lg"
-						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground gap-3"
 					>
 						<Avatar.Root class="h-8 w-8 rounded-lg">
 							<Avatar.Image src={user.avatar} alt={user.name} />
@@ -56,7 +56,7 @@
 				sideOffset={4}
 			>
 				<DropdownMenu.Label class="p-0 font-normal">
-					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+					<div class="flex items-center gap-3 px-1 py-1.5 text-left text-sm">
 						<Avatar.Root class="h-8 w-8 rounded-lg">
 							<Avatar.Image src={user.avatar} alt={user.name} />
 							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
