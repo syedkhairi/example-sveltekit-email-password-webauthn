@@ -1,13 +1,15 @@
-import { superValidate } from 'sveltekit-superforms';
+import { message, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad, Actions, RequestEvent } from './$types';
 import { profileFormSchema } from './profile-form.svelte';
 import { zod } from 'sveltekit-superforms/adapters';
 import { fail } from '@sveltejs/kit';
+import { updateNameAndUsername } from '$lib/server/auth/user';
 
 export const load = (async ({ parent }) => {
     const { user } = await parent();
     return {
         form: await superValidate({
+            name: user.name,
             username: user.username
         }, zod(profileFormSchema), {
             errors: false
@@ -40,4 +42,12 @@ async function updateNameUsernameAction(event: RequestEvent) {
     const { data: formData } = form;
     const name = formData.name;
     const username = formData.username;
+    console.log(name)
+    const result = await updateNameAndUsername(event.locals.user.id, name, username);
+    if (result) {
+        message(form, {
+            message: "Your profile updated"
+        })
+    }
+    return { form }
 }

@@ -42,34 +42,26 @@ export const actions: Actions = {
 };
 
 async function action(event: RequestEvent) {
+	const form = await superValidate(event.request, zod(registerFormSchema));
+
+	if (!form.valid) return fail(400, { form });
+
 	// TODO: Assumes X-Forwarded-For is always included.
 	const clientIP = event.request.headers.get("X-Forwarded-For");
 	if (clientIP !== null && !ipBucket.check(clientIP, 1)) {
 		return fail(429, {
 			message: "Too many requests",
 			email: "",
+			name: "",
 			username: ""
 		});
 	}
 
-	const formData = await event.request.formData();
-	const email = formData.get("email");
-	const username = formData.get("username");
-	const password = formData.get("password");
-	if (typeof email !== "string" || typeof username !== "string" || typeof password !== "string") {
-		return fail(400, {
-			message: "Invalid or missing fields",
-			email: "",
-			username: ""
-		});
-	}
-	if (email === "" || password === "" || username === "") {
-		return fail(400, {
-			message: "Please enter your username, email, and password",
-			email: "",
-			username: ""
-		});
-	}
+	const { data: formData } = form
+	const email = formData.email;
+	const name = formData.name;
+	const username = formData.username;
+	const password = formData.password;
 	if (!verifyEmailInput(email)) {
 		return fail(400, {
 			message: "Invalid email",
@@ -107,7 +99,7 @@ async function action(event: RequestEvent) {
 			username
 		});
 	}
-	const user = await createUser(email, username, password);
+	const user = await createUser(email, username, password, name);
 	const emailVerificationRequest = await createEmailVerificationRequest(user.id, user.email);
 	sendVerificationEmail(emailVerificationRequest.email, emailVerificationRequest.code);
 	setEmailVerificationRequestCookie(event, emailVerificationRequest);

@@ -9,7 +9,7 @@ export function verifyUsernameInput(username: string): boolean {
 	return username.length > 3 && username.length < 32 && username.trim() === username;
 }
 
-export async function createUser(email: string, username: string, password: string): Promise<User> {
+export async function createUser(email: string, username: string, password: string, name: string): Promise<User> {
 	const passwordHash = await hashPassword(password);
 	const recoveryCode = generateRandomRecoveryCode();
 	const encryptedRecoveryCode = encryptString(recoveryCode);
@@ -18,6 +18,7 @@ export async function createUser(email: string, username: string, password: stri
 		.insert(table.user)
 		.values({
 			email: email,
+			name: name,
 			username: username,
 			password_hash: passwordHash,
 			recovery_code: encryptedRecoveryCode
@@ -30,6 +31,7 @@ export async function createUser(email: string, username: string, password: stri
 	}
 	const user: User = {
 		id: row.id,
+		name,
 		username,
 		email,
 		emailVerified: false,
@@ -72,6 +74,19 @@ export async function setUserAsEmailVerifiedIfEmailMatches(userId: number, email
 				eq(table.user.id, userId),
 				eq(table.user.email, email)
 			)
+		)
+	return result.rowCount ? result.rowCount > 0 : false;
+}
+
+export async function updateNameAndUsername(userId: number, name: string, username: string): Promise<boolean> {
+	const result = await db
+		.update(table.user)
+		.set({
+			name: name,
+			username: username
+		})
+		.where(
+			eq(table.user.id, userId)
 		)
 	return result.rowCount ? result.rowCount > 0 : false;
 }
@@ -122,6 +137,7 @@ export async function getUserFromEmail(email: string): Promise<User | null> {
 			user: {
 				id: table.user.id,
 				email: table.user.email,
+				name: table.user.name,
 				username: table.user.username,
 				email_verified: table.user.email_verified,
 			},
@@ -147,6 +163,7 @@ export async function getUserFromEmail(email: string): Promise<User | null> {
 	const user: User = {
 		id: row.user.id,
 		email: row.user.email,
+		name: row.user.name,
 		username: row.user.username,
 		emailVerified: Boolean(row.user.email_verified),
 		registeredTOTP: row.totp_credential ? true : false,
@@ -163,6 +180,7 @@ export async function getUserFromEmail(email: string): Promise<User | null> {
 export interface User {
 	id: number;
 	email: string;
+	name: string;
 	username: string;
 	emailVerified: boolean;
 	registeredTOTP: boolean;

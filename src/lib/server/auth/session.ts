@@ -20,6 +20,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 			user: {
 				id: table.user.id,
 				email: table.user.email,
+				name: table.user.name,
 				username: table.user.username,
 				emailVerified: table.user.email_verified,
 				registeredTOTP: sql<number>`CASE WHEN ${table.totpCredential.id} IS NOT NULL THEN 1 ELSE 0 END`,
@@ -46,6 +47,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 	const user: User = {
 		id: row.user.id,
 		email: row.user.email,
+		name: row.user.name,
 		username: row.user.username,
 		emailVerified: Boolean(row.user.emailVerified),
 		registeredTOTP: Boolean(row.user.registeredTOTP),
