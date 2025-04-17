@@ -38,7 +38,7 @@
                                 {/if}
                             </Breadcrumb.Item>
                             {#if index < urlParts.length - 1}
-                                <Breadcrumb.Separator class="hidden md:block" />
+                                <Breadcrumb.Separator class="block" />
                             {/if}
                         {/each}
 					</Breadcrumb.List>
@@ -46,7 +46,7 @@
 			</div>
 		</header>
         <div class="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-x-hidden">
-            <div class="min-h-[100vh] flex-1 rounded-xl md:min-h-min">
+            <div class=" h-full flex-1 rounded-xl md:min-h-min">
                 {@render children()}
             </div>
         </div>
