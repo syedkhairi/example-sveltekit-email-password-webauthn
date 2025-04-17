@@ -1,11 +1,5 @@
-<script lang="ts">
-    import { Button } from "$lib/components/ui/button/index.js";
-    import * as Avatar from "$lib/components/ui/avatar/index.js";
-    import Heart from "@lucide/svelte/icons/heart";
-    import Repeat from "@lucide/svelte/icons/repeat-2";
-    import Message from "@lucide/svelte/icons/message-square";
-
-    type Post = {
+<script lang="ts" module>
+    export type PostType = {
         text: string;
         datetime: string;
         username: string;
@@ -13,6 +7,14 @@
         name: string;
         likes: number
     }
+</script>
+
+<script lang="ts">
+    import { Button } from "$lib/components/ui/button/index.js";
+    import * as Avatar from "$lib/components/ui/avatar/index.js";
+    import Heart from "@lucide/svelte/icons/heart";
+    import Repeat from "@lucide/svelte/icons/repeat-2";
+    import Message from "@lucide/svelte/icons/message-square";
 
     let {
         text,
@@ -21,7 +23,7 @@
         name,
         avatarUrl,
         likes
-    } : Post = $props();
+    } : PostType = $props();
 
     const initialsFromName = (name: string) => {
         const words = name.trim().split(/\s+/);
@@ -50,30 +52,23 @@
             return `${Math.floor(diffInSeconds / 86400)}d`;
         }
     });
-
-    const getRandomPastelHexColour = () => {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
 </script>
 
 <div class="flex flex-row gap-3">
-    <Avatar.Root class="size-8 mt-0.5">
-        <Avatar.Image src={avatarUrl} alt={username} />
-        <Avatar.Fallback>{initialsFromName(name)}</Avatar.Fallback>
-    </Avatar.Root>
+    <a href="#" target="_blank" title={`Go to ${username}'s profile`} class="flex-shrink-0">
+        <Avatar.Root class="size-8 mt-0.5">
+            <Avatar.Image src={avatarUrl} alt={username} />
+            <Avatar.Fallback>{initialsFromName(name)}</Avatar.Fallback>
+        </Avatar.Root>
+    </a>
     <div class="w-full">
         <div class="flex flex-row gap-1.5 items-center flex-1 mb-1">
-            <p class="text-sm font-semibold">{name}</p>
-            <span class="text-xs text-muted-foreground">@{username}</span>
-            <span class="text-xs text-muted-foreground ml-auto">{dateSinceAgo}</span>
+            <a href="#" title={`View ${name}'s profile`} target="_blank" class="text-sm font-semibold line-clamp-1 hover:underline hover:underline-offset-2">{name}</a>
+            <span class="text-xs text-muted-foreground truncate">@{username}</span>
+            <a href="#" title="View this post in Bluesky app" target="_blank" class="text-xs text-muted-foreground ml-auto hover:underline hover:underline-offset-2">{dateSinceAgo}</a>
         </div>
-        <p class="text-sm">
-            {text}
+        <p class="text-sm prose *:[$:">
+            {@html text}
         </p>
         <div class="grid grid-cols-3 mt-2">
             <Button

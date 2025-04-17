@@ -2,6 +2,7 @@
 // for information about these interfaces
 import type { User } from "$lib/server/auth/user";
 import type { Session } from "$lib/server/auth/session";
+import type { Agent } from "@atproto/api";
 
 declare global {
 	namespace App {
@@ -9,6 +10,7 @@ declare global {
 		interface Locals {
 			user: User | null;
 			session: Session | null;
+			agent: Agent | null;
 		}
 		// interface PageData {}
 		// interface PageState {}
