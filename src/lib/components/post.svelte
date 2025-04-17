@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Button } from "$lib/components/ui/button/index.js";
+    import * as Avatar from "$lib/components/ui/avatar/index.js";
     import Heart from "@lucide/svelte/icons/heart";
     import Repeat from "@lucide/svelte/icons/repeat-2";
     import Message from "@lucide/svelte/icons/message-square";
@@ -18,6 +19,7 @@
         datetime,
         username,
         name,
+        avatarUrl,
         likes
     } : Post = $props();
 
@@ -60,12 +62,13 @@
 </script>
 
 <div class="flex flex-row gap-3">
-    <div class="rounded-full size-8 text-sm flex shrink-0 items-center justify-center mt-0.5 text-white" style:background-color={getRandomPastelHexColour()}>
-        {initialsFromName(name)}
-    </div>
+    <Avatar.Root class="size-8 mt-0.5">
+        <Avatar.Image src={avatarUrl} alt={username} />
+        <Avatar.Fallback>{initialsFromName(name)}</Avatar.Fallback>
+    </Avatar.Root>
     <div class="w-full">
         <div class="flex flex-row gap-1.5 items-center flex-1 mb-1">
-            <span class="text-sm font-semibold">{name}</span>
+            <p class="text-sm font-semibold">{name}</p>
             <span class="text-xs text-muted-foreground">@{username}</span>
             <span class="text-xs text-muted-foreground ml-auto">{dateSinceAgo}</span>
         </div>
@@ -79,7 +82,7 @@
                 class="size-6"
                 >
                 <Heart class="text-muted-foreground !size-3.5" />
-                <span class="text-muted-foreground text-xs">{Math.floor(Math.random() * 100)}</span>
+                <span class="text-muted-foreground text-xs">{likes ? likes : null}</span>
             </Button>
             <Button
                 variant="ghost"

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '@xyflow/svelte/dist/style.css';
 	import "../app.css";
 	import type { Snippet } from "svelte";
 	import { ModeWatcher } from "mode-watcher";

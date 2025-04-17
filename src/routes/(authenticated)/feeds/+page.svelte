@@ -63,18 +63,27 @@
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
         </div>
-        <ScrollArea orientation="vertical">
+        <ScrollArea orientation="vertical" class="relative">
+            <!-- <div class="absolute inset-x-0 top-1 text-center">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    class="rounded-full text-xs !h-7"
+                    >
+                    New posts
+                </Button>
+            </div> -->
             <div class="space-y-3 px-4">
                 {#each data.posts as post}
                     <Post
-                        text={post.body}
-                        name={post.user.fullName}
-                        username={post.user.username}
-                        datetime={new Date().toString()}
-                        avatarUrl=""
-                        likes={post.likes}
+                        text={post.text}
+                        name={post.name || "Unknown"}
+                        username={post.username}
+                        datetime={post.datetime}
+                        avatarUrl={post.avatarUrl || ""}
+                        likes={post.likes || 0}
                         />
-                    <Separator />
+                    <Separator class="last:hidden" />
                 {:else}
                     <div class="flex flex-col items-center justify-center h-full gap-3">
                         <span class="text-xs text-muted-foreground">No posts found for this feed</span>
