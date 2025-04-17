@@ -82,9 +82,9 @@
 {/snippet}
 
 <div class="flex flex-col h-full w-full overflow-hidden space-y-4">
-    <h1 class="uppercase tracking-wide text-xs text-muted-foreground">My feeds</h1>
+    <h1 class="uppercase tracking-wide text-xs text-muted-foreground pl-4">My feeds</h1>
     <ScrollArea class="flex-1" orientation="horizontal">
-        <div class="flex flex-row gap-4">
+        <div class="flex flex-row gap-4 ml-4">
             {@render card()}
             {@render card()}
             {@render card()}

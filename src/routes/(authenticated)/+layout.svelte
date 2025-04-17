@@ -45,7 +45,7 @@
 				</Breadcrumb.Root>
 			</div>
 		</header>
-        <div class="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-x-hidden">
+        <div class="flex flex-1 flex-col gap-4 pt-0 overflow-x-hidden">
             <div class=" h-full flex-1 rounded-xl md:min-h-min">
                 {@render children()}
             </div>
